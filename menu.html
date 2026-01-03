@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Menu Page - WhatsApp Ordering</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ea2a33",
+                        "background-light": "#fcf8f8",
+                        "background-dark": "#1a0d0d",
+                        "card-light": "#ffffff",
+                        "card-dark": "#2a1515",
+                        "whatsapp-green": "#25D366",
+                        "whatsapp-green-dark": "#128C7E",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        ::-webkit-scrollbar {width: 8px;}
+        ::-webkit-scrollbar-track {background: transparent;}
+        ::-webkit-scrollbar-thumb {background: #d1d5db; border-radius: 4px;}
+        ::-webkit-scrollbar-thumb:hover {background: #9ca3af;}
+        .hide-scrollbar::-webkit-scrollbar {display: none;}
+        .hide-scrollbar {-ms-overflow-style: none; scrollbar-width: none;}
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#1b0e0e] dark:text-gray-100 min-h-screen flex flex-col">
+<header class="sticky top-0 z-50 w-full border-b border-[#f3e7e8] dark:border-[#3a2020] bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md">
+<div class="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-10 flex items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined text-2xl">restaurant</span>
+</div>
+<h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    Spice<span class="text-primary">Route</span>
+</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="index.html">Home</a>
+<a class="text-primary text-sm font-bold leading-normal" href="menu.html">Menu</a>
+<a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="about.html">About</a>
+<a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="contact.html">Contact</a>
+</nav>
+<div class="flex items-center gap-4">
+<a aria-label="Cart" class="relative p-2 text-[#1b0e0e] dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors group" href="orderflow.html">
+<span class="material-symbols-outlined text-[28px]">shopping_cart</span>
+<span id="cartCount" class="absolute top-0 right-0 -mr-1 -mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-[#1a0d0d]">0</span>
+</a>
+<a href="orderflow.html" class="hidden md:flex items-center gap-2 bg-primary hover:bg-red-700 text-white px-5 py-2.5 rounded-full font-bold text-sm transition-all shadow-md hover:shadow-lg">
+<span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+<span>My Order</span>
+</a>
+<button id="mobileMenuButton" class="md:hidden text-[#1b0e0e] dark:text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobileMenu" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm opacity-0 invisible transition-all duration-300 md:hidden">
+    <div class="absolute right-0 top-0 h-full w-3/4 max-w-sm bg-white dark:bg-card-dark shadow-2xl transform translate-x-full transition-transform duration-300">
+        <div class="p-6 h-full overflow-y-auto">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="size-8 flex items-center justify-center rounded-lg bg-primary text-white">
+                        <span class="material-symbols-outlined text-2xl">restaurant</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">
+                        Spice<span class="text-primary">Route</span>
+                    </h2>
+                </div>
+                <button id="closeMobileMenu" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+            
+            <nav class="flex flex-col gap-4 mb-8">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-slate-700 dark:text-slate-300 font-semibold" href="index.html">
+                    <span class="material-symbols-outlined">home</span>
+                    Home
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary font-bold" href="menu.html">
+                    <span class="material-symbols-outlined">restaurant_menu</span>
+                    Menu
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-slate-700 dark:text-slate-300 font-semibold" href="about.html">
+                    <span class="material-symbols-outlined">info</span>
+                    About
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-slate-700 dark:text-slate-300 font-semibold" href="contact.html">
+                    <span class="material-symbols-outlined">contact_support</span>
+                    Contact
+                </a>
+            </nav>
+            
+            <a href="orderflow.html" class="w-full flex items-center justify-center gap-3 h-14 px-8 rounded-lg bg-primary hover:bg-red-700 text-white font-bold transition-all shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                <span>My Order</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="relative w-full h-[280px] md:h-[320px] bg-gray-900 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center opacity-70 transition-transform hover:scale-105 duration-[20s]" data-alt="Close up of delicious food spread on a table" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD2-DLSMZGwCfclyaXTATudQCdpmP6QvwrxCkMfRA-wLKd5Pe5YsoBLGXov-wKcTgsS3zLZCj_qYgx37H6CVPFDb_v1OHM3AKleX0sm9RHaGKWpkXPubfnvYq1gAivoJquxTQQuIfTLSNPSHoPX4Hx_vLcGR2FaeUjguBnZtCISntYqBvabN_XqyWcwVHxX7fPNgMf2JvsreXQ8cpLKA5tSBrlpRti9Bq4QIyaObCI3HdV6eWh0OwPF3xVkYogZnOSspgw8bh0kTtSC');">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-light dark:from-background-dark via-transparent to-black/60"></div>
+<div class="relative max-w-[1200px] mx-auto px-6 h-full flex flex-col justify-end pb-10">
+<span class="text-primary font-bold tracking-wider text-sm mb-2 uppercase">Authentic Flavors</span>
+<h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2 shadow-sm">Our Menu</h1>
+<p class="text-gray-200 max-w-lg text-lg">Experience authentic flavors delivered directly to your chat. Browse, choose, and order instantly.</p>
+</div>
+</div>
+<div class="sticky top-[72px] z-40 bg-background-light dark:bg-background-dark border-b border-[#e7d0d1] dark:border-[#3a2020] shadow-sm">
+<div class="max-w-[1200px] mx-auto px-6">
+<div class="flex gap-2 overflow-x-auto hide-scrollbar py-4 md:justify-center">
+<a class="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-full text-sm font-bold shadow-md whitespace-nowrap transition-transform hover:scale-105" href="#starters">
+<span class="material-symbols-outlined text-[18px]">tapas</span>
+                    Starters
+                </a>
+<a class="flex items-center gap-2 px-6 py-2.5 bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 hover:border-primary/30 text-gray-700 dark:text-gray-200 rounded-full text-sm font-bold whitespace-nowrap transition-all hover:bg-gray-50 dark:hover:bg-[#352020]" href="#main-course">
+<span class="material-symbols-outlined text-[18px]">restaurant</span>
+                    Main Course
+                </a>
+<a class="flex items-center gap-2 px-6 py-2.5 bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 hover:border-primary/30 text-gray-700 dark:text-gray-200 rounded-full text-sm font-bold whitespace-nowrap transition-all hover:bg-gray-50 dark:hover:bg-[#352020]" href="#breads">
+<span class="material-symbols-outlined text-[18px]">bakery_dining</span>
+                    Breads
+                </a>
+<a class="flex items-center gap-2 px-6 py-2.5 bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 hover:border-primary/30 text-gray-700 dark:text-gray-200 rounded-full text-sm font-bold whitespace-nowrap transition-all hover:bg-gray-50 dark:hover:bg-[#352020]" href="#drinks">
+<span class="material-symbols-outlined text-[18px]">local_bar</span>
+                    Drinks
+                </a>
+</div>
+</div>
+</div>
+<main class="flex-grow max-w-[1200px] w-full mx-auto px-6 py-10 space-y-16">
+<section class="scroll-mt-40" id="starters">
+<div class="flex items-center gap-4 mb-8">
+<h2 class="text-3xl font-bold text-[#1b0e0e] dark:text-white">Starters</h2>
+<div class="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="group bg-card-light dark:bg-card-dark rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(234,42,51,0.15)] transition-all duration-300 overflow-hidden flex flex-col border border-transparent hover:border-primary/10">
+<div class="relative h-56 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Plate of delicious butter chicken with garnish" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA4QNxkTtkzFM4Ka0Lz8Wup-P3ommbN-5totWZG4VzsmY3kHN4eETQ1WqFvkkLWARY5-oSnP4rG952O2A5WeCOMrny9XQpkR7-Z0e8ZfpOA1bMINqZC5LOR-nnbfW70yE1PExHeEX9q1BsH0G0ytEVtPeZlzdtZ-9Ioy30c6vg_kWdFCgBTYxHswGsHGG2UyXIYrz3vtDyKxoLUASXn5EhprmsZa-IPt6Qf4wN76eS_gJ8dQxpFTcpLP5sL09UAN3gsk2QvwrcEuJ7R');">
+</div>
+<div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider text-primary shadow-sm">
+                            Best Seller
+                        </div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold text-[#1b0e0e] dark:text-white group-hover:text-primary transition-colors">Butter Chicken</h3>
+<span class="text-lg font-bold text-primary">$14.00</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Tender chicken cooked in a rich, creamy tomato and butter gravy. A classic favorite.</p>
+<button class="add-to-cart w-full flex items-center justify-center gap-2 bg-primary hover:bg-red-700 text-white py-3 rounded-lg font-bold transition-colors shadow-sm" data-name="Butter Chicken" data-price="14.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuA4QNxkTtkzFM4Ka0Lz8Wup-P3ommbN-5totWZG4VzsmY3kHN4eETQ1WqFvkkLWARY5-oSnP4rG952O2A5WeCOMrny9XQpkR7-Z0e8ZfpOA1bMINqZC5LOR-nnbfW70yE1PExHeEX9q1BsH0G0ytEVtPeZlzdtZ-9Ioy30c6vg_kWdFCgBTYxHswGsHGG2UyXIYrz3vtDyKxoLUASXn5EhprmsZa-IPt6Qf4wN76eS_gJ8dQxpFTcpLP5sL09UAN3gsk2QvwrcEuJ7R">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                            Add to Cart
+                        </button>
+</div>
+</div>
+<div class="group bg-card-light dark:bg-card-dark rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(234,42,51,0.15)] transition-all duration-300 overflow-hidden flex flex-col border border-transparent hover:border-primary/10">
+<div class="relative h-56 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Crispy samosas served with green chutney" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA3RvDN7S2Kfehg6naOoJh4dyHXM_sjfNJXwDiuYIytDx8XDqi9XNH0vrSnodtWteepxr-wtIlIr7Icjs-aufL-4C_UT00NpIasDAy1qLpJDE4vNDKZMUoliAeKCZYytVNMPEGEC10TG--cr6UrYRaHF-GalwVVPuGa2U1r_SUdegUddGkBSph-B3cfTLOGuwU2MS5vv1yZBoFokTQzhX0ADUrfShGkb5icrbWL2riG5ROTQZtfBHsHopO76jIoGVAEWeHUUvCAj7df');">
+</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold text-[#1b0e0e] dark:text-white group-hover:text-primary transition-colors">Vegetable Samosa</h3>
+<span class="text-lg font-bold text-primary">$6.50</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Crispy pastry filled with spiced potatoes and green peas. Served with tamarind chutney.</p>
+<button class="add-to-cart w-full flex items-center justify-center gap-2 bg-primary hover:bg-red-700 text-white py-3 rounded-lg font-bold transition-colors shadow-sm" data-name="Vegetable Samosa" data-price="6.50" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuA3RvDN7S2Kfehg6naOoJh4dyHXM_sjfNJXwDiuYIytDx8XDqi9XNH0vrSnodtWteepxr-wtIlIr7Icjs-aufL-4C_UT00NpIasDAy1qLpJDE4vNDKZMUoliAeKCZYytVNMPEGEC10TG--cr6UrYRaHF-GalwVVPuGa2U1r_SUdegUddGkBSph-B3cfTLOGuwU2MS5vv1yZBoFokTQzhX0ADUrfShGkb5icrbWL2riG5ROTQZtfBHsHopO76jIoGVAEWeHUUvCAj7df">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                            Add to Cart
+                        </button>
+</div>
+</div>
+<div class="group bg-card-light dark:bg-card-dark rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(234,42,51,0.15)] transition-all duration-300 overflow-hidden flex flex-col border border-transparent hover:border-primary/10">
+<div class="relative h-56 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Chicken tikka skewers on a plate" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA2zqaUSOm56r4tYR7gqo8MycLcwQVt-DxI38XJJX0OtZse0Hz2_CbJF2aZDczcyrsNHwK3p5BmFl1fW02Yb-t_Lv7LQYxLqIrlNxLZj4fHE4yzwfZo5IfYmsQLISNdYfGZoXwjZ4APeC8uV7pNIEZRq1JkBgsfCcvYbd-iuava9RczQ6nRagrl4xH683K8DShDgR4L-qoptpOhtmrgcVM5I5fG0QOcdOnYHCILWfJSHfmeIVOO8aK0dKCZ-FjE-oiGnFta6F-061F-');">
+</div>
+<div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider text-red-600 shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">local_fire_department</span> Spicy
+                        </div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold text-[#1b0e0e] dark:text-white group-hover:text-primary transition-colors">Chicken Tikka</h3>
+<span class="text-lg font-bold text-primary">$12.00</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Boneless chicken chunks marinated in yogurt and spices, roasted in a clay oven.</p>
+<button class="add-to-cart w-full flex items-center justify-center gap-2 bg-primary hover:bg-red-700 text-white py-3 rounded-lg font-bold transition-colors shadow-sm" data-name="Chicken Tikka" data-price="12.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuA2zqaUSOm56r4tYR7gqo8MycLcwQVt-DxI38XJJX0OtZse0Hz2_CbJF2aZDczcyrsNHwK3p5BmFl1fW02Yb-t_Lv7LQYxLqIrlNxLZj4fHE4yzwfZo5IfYmsQLISNdYfGZoXwjZ4APeC8uV7pNIEZRq1JkBgsfCcvYbd-iuava9RczQ6nRagrl4xH683K8DShDgR4L-qoptpOhtmrgcVM5I5fG0QOcdOnYHCILWfJSHfmeIVOO8aK0dKCZ-FjE-oiGnFta6F-061F-">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                            Add to Cart
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<section class="scroll-mt-40" id="main-course">
+<div class="flex items-center gap-4 mb-8">
+<h2 class="text-3xl font-bold text-[#1b0e0e] dark:text-white">Main Course</h2>
+<div class="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="group bg-card-light dark:bg-card-dark rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(234,42,51,0.15)] transition-all duration-300 overflow-hidden flex flex-col border border-transparent hover:border-primary/10">
+<div class="relative h-56 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Bowl of creamy paneer butter masala" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAymbZTeRtccqpHpa5yF52w6d8hg4rPJWG8sgMUGJblHUkIRyRyNn9iajNQ9Dg0ceY0_94Tt3MqnjWQdPwW2EZm3_av8SM6HSBEpJoIAkz0pGwoWJZB0968lvJ2VOr297SAAiB9yfI1417IpyiSEpYLLMkYNt8P8eTkWXRuoAm_IXdUHPzWN4lQKTD3h5mzivdjiuLzyPSTR1RkHGSpLufWvtTtodUQClnjpSz2Y42BtamlWqhU9fN2_f3ITk8r1XR8giXTEBMQeQCv');">
+</div>
+<div class="absolute top-3 right-3 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 backdrop-blur-sm px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">eco</span> Veg
+                        </div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold text-[#1b0e0e] dark:text-white group-hover:text-primary transition-colors">Paneer Butter Masala</h3>
+<span class="text-lg font-bold text-primary">$13.50</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Cubes of cottage cheese simmered in a rich, buttery, and slightly sweet tomato gravy.</p>
+<button class="add-to-cart w-full flex items-center justify-center gap-2 bg-primary hover:bg-red-700 text-white py-3 rounded-lg font-bold transition-colors shadow-sm" data-name="Paneer Butter Masala" data-price="13.50" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuAymbZTeRtccqpHpa5yF52w6d8hg4rPJWG8sgMUGJblHUkIRyRyNn9iajNQ9Dg0ceY0_94Tt3MqnjWQdPwW2EZm3_av8SM6HSBEpJoIAkz0pGwoWJZB0968lvJ2VOr297SAAiB9yfI1417IpyiSEpYLLMkYNt8P8eTkWXRuoAm_IXdUHPzWN4lQKTD3h5mzivdjiuLzyPSTR1RkHGSpLufWvtTtodUQClnjpSz2Y42BtamlWqhU9fN2_f3ITk8r1XR8giXTEBMQeQCv">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                            Add to Cart
+                        </button>
+</div>
+</div>
+<div class="group bg-card-light dark:bg-card-dark rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(234,42,51,0.15)] transition-all duration-300 overflow-hidden flex flex-col border border-transparent hover:border-primary/10">
+<div class="relative h-56 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Aromatic lamb biryani in a bowl" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAPCtrPXnflYR4VrmViOXGDdLFGbH6qgndmMzezYpT11Lz-_CWN4eOBVEFS8tK6kfRJrbJJBpygGkOPtR0ZP5qZctz9l21S41tflTVDPsgmxU5fH5CcpTkoDQ4KRfI8lVrATWGOlO9xO-d0dvCNEwZ4SMJZUJ6V-nDop-e2gv4WjxyNNPIjGk9YaJ0FJxm-MSjm-LpYNht7lnFm07VOLGuZPUGW2kmbal3RCbzq-Wh3Mc1jPXlNxrFNTsskS-uWw-JrFSps0mBRC9FM');">
+</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold text-[#1b0e0e] dark:text-white group-hover:text-primary transition-colors">Lamb Biryani</h3>
+<span class="text-lg font-bold text-primary">$16.00</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Aromatic basmati rice cooked with tender lamb pieces and exotic spices.</p>
+<button class="add-to-cart w-full flex items-center justify-center gap-2 bg-primary hover:bg-red-700 text-white py-3 rounded-lg font-bold transition-colors shadow-sm" data-name="Lamb Biryani" data-price="16.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuAPCtrPXnflYR4VrmViOXGDdLFGbH6qgndmMzezYpT11Lz-_CWN4eOBVEFS8tK6kfRJrbJJBpygGkOPtR0ZP5qZctz9l21S41tflTVDPsgmxU5fH5CcpTkoDQ4KRfI8lVrATWGOlO9xO-d0dvCNEwZ4SMJZUJ6V-nDop-e2gv4WjxyNNPIjGk9YaJ0FJxm-MSjm-LpYNht7lnFm07VOLGuZPUGW2kmbal3RCbzq-Wh3Mc1jPXlNxrFNTsskS-uWw-JrFSps0mBRC9FM">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                            Add to Cart
+                        </button>
+</div>
+</div>
+<div class="group bg-card-light dark:bg-card-dark rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(234,42,51,0.15)] transition-all duration-300 overflow-hidden flex flex-col border border-transparent hover:border-primary/10">
+<div class="relative h-56 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Healthy green salad bowl" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDDR0uU1kbI5wpWWf2zaTb4e9kp2ij80fCG5R8BxitLaI8Fe9BeAZZeNnoXAxIIA7rI50t4sro5IFxTVeOGbjPKzYFlcMYP583bjtYv92R6KU2Vn9-ifTCtjLhXgb5HWfcjpxmyA9xPyzk2H3UNzdaP0syPO68Qehgtk3av7vFaiPeJ2Bo48845Gn6YDq7Ry316o3wB4-GnOBENd66F9uXYwE8YWqBhWY194_MXkihOIYmDJolOo3KTq8C7SKaZVPKPNeyFq2ptwURd');">
+</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xl font-bold text-[#1b0e0e] dark:text-white group-hover:text-primary transition-colors">Garden Salad</h3>
+<span class="text-lg font-bold text-primary">$9.00</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 flex-grow">Fresh mix of lettuce, cucumbers, tomatoes, and carrots with a zesty lemon dressing.</p>
+<button class="add-to-cart w-full flex items-center justify-center gap-2 bg-primary hover:bg-red-700 text-white py-3 rounded-lg font-bold transition-colors shadow-sm" data-name="Garden Salad" data-price="9.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuDDR0uU1kbI5wpWWf2zaTb4e9kp2ij80fCG5R8BxitLaI8Fe9BeAZZeNnoXAxIIA7rI50t4sro5IFxTVeOGbjPKzYFlcMYP583bjtYv92R6KU2Vn9-ifTCtjLhXgb5HWfcjpxmyA9xPyzk2H3UNzdaP0syPO68Qehgtk3av7vFaiPeJ2Bo48845Gn6YDq7Ry316o3wB4-GnOBENd66F9uXYwE8YWqBhWY194_MXkihOIYmDJolOo3KTq8C7SKaZVPKPNeyFq2ptwURd">
+<span class="material-symbols-outlined text-[20px]">add_shopping_cart</span>
+                            Add to Cart
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<section class="scroll-mt-40" id="breads">
+<div class="flex items-center gap-4 mb-8">
+<h2 class="text-3xl font-bold text-[#1b0e0e] dark:text-white">Breads &amp; Drinks</h2>
+<div class="h-px flex-1 bg-gray-200 dark:bg-gray-700"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-primary/20 transition-all flex flex-col">
+<div class="h-40 rounded-lg bg-cover bg-center mb-4" data-alt="Stack of garlic naan bread" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA5apEghEx53zu0y1W0SEr9JlvsU_FFFejdPocPHRMSOTPe7HOKusIKp5WG-uubkInDOtrMAHEXMzCEcfI60TN1OGaHAFYuUexunl3xnB60WZ0J41TYMfFi9fd0-vBqcdPsd_UuuGR-Cozoj1I6mlf6KRQAqzdVf02uAuewfxke9zn3CFnKaF3VOj6sP6PwhrZIMULe6ROdQjiKCmRE7oydU6IPVscMCnNBUHj8v2m9e44a_VFnO0fNIdqkw0ntxx5sAti2LKj57L-G');"></div>
+<div class="flex justify-between items-start mb-3">
+<h3 class="text-lg font-bold text-[#1b0e0e] dark:text-white">Garlic Naan</h3>
+<span class="text-primary font-bold">$3.50</span>
+</div>
+<button class="add-to-cart w-full mt-auto flex items-center justify-center gap-2 bg-primary hover:bg-red-700 text-white py-2.5 rounded-lg font-bold transition-colors shadow-sm text-sm" data-name="Garlic Naan" data-price="3.50" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuA5apEghEx53zu0y1W0SEr9JlvsU_FFFejdPocPHRMSOTPe7HOKusIKp5WG-uubkInDOtrMAHEXMzCEcfI60TN1OGaHAFYuUexunl3xnB60WZ0J41TYMfFi9fd0-vBqcdPsd_UuuGR-Cozoj1I6mlf6KRQAqzdVf02uAuewfxke9zn3CFnKaF3VOj6sP6PwhrZIMULe6ROdQjiKCmRE7oydU6IPVscMCnNBUHj8v2m9e44a_VFnO0fNIdqkw0ntxx5sAti2LKj57L-G">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                            Add to Cart
+                        </button>
+</div>
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-primary/20 transition-all flex flex-col">
+<div class="h-40 rounded-lg bg-cover bg-center mb-4" data-alt="Plain naan bread" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAmxf-pHSNikreb1dLn_kxXQQKvyGT35FufiQ6Z7azOxlBMGZ55pLh4S1dkEMSrCNSEzXpV9Pb6dh-x1Uc_DiDtMevySITtyRa-CHFv8x_yXls0CmApXsk8UQLFlyvaCqxuCVGbpsFVzbmK--5iJ8fvyL8jMZu8ApC7A0OGMwIezf98At4vU3C8sOpWAXC_tkIKuTtwOVzZiS72oqAmAUtHMsHGuoxEBlfm3BLrlStfNrhKIiAu8WXxRmcN7BTSQ-QcQXMaNabazm5g');"></div>
+<div class="flex justify-between items-start mb-3">
+<h3 class="text-lg font-bold text-[#1b0e0e] dark:text-white">Butter Naan</h3>
+<span class="text-primary font-bold">$3.00</span>
+</div>
+<button class="add-to-cart w-full mt-auto flex items-center justify-center gap-2 bg-primary hover:bg-red-700 text-white py-2.5 rounded-lg font-bold transition-colors shadow-sm text-sm" data-name="Butter Naan" data-price="3.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuAmxf-pHSNikreb1dLn_kxXQQKvyGT35FufiQ6Z7azOxlBMGZ55pLh4S1dkEMSrCNSEzXpV9Pb6dh-x1Uc_DiDtMevySITtyRa-CHFv8x_yXls0CmApXsk8UQLFlyvaCqxuCVGbpsFVzbmK--5iJ8fvyL8jMZu8ApC7A0OGMwIezf98At4vU3C8sOpWAXC_tkIKuTtwOVzZiS72oqAmAUtHMsHGuoxEBlfm3BLrlStfNrhKIiAu8WXxRmcN7BTSQ-QcQXMaNabazm5g">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                            Add to Cart
+                        </button>
+</div>
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-primary/20 transition-all flex flex-col" id="drinks">
+<div class="h-40 rounded-lg bg-cover bg-center mb-4" data-alt="Glass of mango lassi" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBjnxlbEEd1cFTV9CUTxd3C8mQHLpv4XL71cbfzbXhFG7hVPyj1Bk7_1voP2ZFEipZqtOUAmoYnnKN6NnJTEwVygWWdfmPWN6rJR_Y1KlM0V3si3ivWCP6DFIooOOS42xLEmD9zIV5fYYHxVrusERvcwYEOgXH1wCic5lGgTTs91vFMpUIv83URvajHBJMwLcHaUDv9uSDygRgNtO1LVbT0Qikznh5EldZpEm0iZG6yx6hPmAzVSLSiSB6hXcF1T5lCHK6Dods04f7u');"></div>
+<div class="flex justify-between items-start mb-3">
+<h3 class="text-lg font-bold text-[#1b0e0e] dark:text-white">Mango Lassi</h3>
+<span class="text-primary font-bold">$5.00</span>
+</div>
+<button class="add-to-cart w-full mt-auto flex items-center justify-center gap-2 bg-primary hover:bg-red-700 text-white py-2.5 rounded-lg font-bold transition-colors shadow-sm text-sm" data-name="Mango Lassi" data-price="5.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuBjnxlbEEd1cFTV9CUTxd3C8mQHLpv4XL71cbfzbXhFG7hVPyj1Bk7_1voP2ZFEipZqtOUAmoYnnKN6NnJTEwVygWWdfmPWN6rJR_Y1KlM0V3si3ivWCP6DFIooOOS42xLEmD9zIV5fYYHxVrusERvcwYEOgXH1wCic5lGgTTs91vFMpUIv83URvajHBJMwLcHaUDv9uSDygRgNtO1LVbT0Qikznh5EldZpEm0iZG6yx6hPmAzVSLSiSB6hXcF1T5lCHK6Dods04f7u">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                            Add to Cart
+                        </button>
+</div>
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 hover:border-primary/20 transition-all flex flex-col">
+<div class="h-40 rounded-lg bg-cover bg-center mb-4" data-alt="Cup of hot masala chai" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAgx2mT_hzFTHM_31NhrwPuXdq9DN8_D_fO3VDr8Onp-jKPqvIFd-QLISvoAqu0EWQ8wctC1-O-97bXDt37IpECcdsJpiLHpR1AC2m7Q7D0oDy6FxkQSlnAfYXFjPrxHq_Hun9cbIR6uGjvQkf3usAOG9zVQKNBxa0CXs8qvnZXAgBukDzzFqgD0yKD4TdiJrCD4kgkK_fbuYiZllDEJOuTfWKliPkrUUXApXJE1ZRARgh2bkMGsjlHMcaBTbLcZxMPxSxma4ufqV_L');"></div>
+<div class="flex justify-between items-start mb-3">
+<h3 class="text-lg font-bold text-[#1b0e0e] dark:text-white">Masala Chai</h3>
+<span class="text-primary font-bold">$3.00</span>
+</div>
+<button class="add-to-cart w-full mt-auto flex items-center justify-center gap-2 bg-primary hover:bg-red-700 text-white py-2.5 rounded-lg font-bold transition-colors shadow-sm text-sm" data-name="Masala Chai" data-price="3.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuAgx2mT_hzFTHM_31NhrwPuXdq9DN8_D_fO3VDr8Onp-jKPqvIFd-QLISvoAqu0EWQ8wctC1-O-97bXDt37IpECcdsJpiLHpR1AC2m7Q7D0oDy6FxkQSlnAfYXFjPrxHq_Hun9cbIR6uGjvQkf3usAOG9zVQKNBxa0CXs8qvnZXAgBukDzzFqgD0yKD4TdiJrCD4kgkK_fbuYiZllDEJOuTfWKliPkrUUXApXJE1ZRARgh2bkMGsjlHMcaBTbLcZxMPxSxma4ufqV_L">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                            Add to Cart
+                        </button>
+</div>
+</div>
+</section>
+</main>
+<a class="fixed bottom-6 right-6 z-50 group flex items-center justify-center" href="https://wa.me/?text=Hi%2C%20I'd%20like%20to%20place%20an%20order!" target="_blank">
+<span class="absolute right-0 bottom-16 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap mb-2 shadow-lg">Chat with us</span>
+<div class="bg-whatsapp-green hover:bg-whatsapp-green-dark text-white p-4 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.4)] transition-all transform hover:scale-110 flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">chat</span>
+</div>
+</a>
+<footer class="bg-background-light dark:bg-background-dark border-t border-[#f3e7e8] dark:border-[#3a2020] py-12 mt-auto">
+<div class="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+<div class="col-span-1 md:col-span-2">
+<div class="flex items-center gap-2 text-primary mb-4">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-bold text-lg text-[#1b0e0e] dark:text-white">SpiceRoute</span>
+</div>
+<p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Delicious authentic cuisine prepared with love and traditional spices. Order now for a delightful dining experience.</p>
+</div>
+<div>
+<h4 class="font-bold text-[#1b0e0e] dark:text-white mb-4">Contact Us</h4>
+<div class="flex flex-col gap-2 text-sm text-gray-500 dark:text-gray-400">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span>123 Spice Avenue, Flavor Town</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">call</span>
+<span>+1 (555) 123-4567</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">mail</span>
+<span>hello@spiceroute.com</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="font-bold text-[#1b0e0e] dark:text-white mb-4">Opening Hours</h4>
+<div class="flex flex-col gap-2 text-sm text-gray-500 dark:text-gray-400">
+<div class="flex justify-between max-w-[200px]">
+<span>Mon - Fri</span>
+<span>11am - 10pm</span>
+</div>
+<div class="flex justify-between max-w-[200px]">
+<span>Sat - Sun</span>
+<span>12pm - 11pm</span>
+</div>
+</div>
+</div>
+</div>
+<div class="max-w-[1200px] mx-auto px-6 mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 text-center text-xs text-gray-400">
+            © 2023 SpiceRoute Restaurant. All rights reserved. Powered by WhatsApp Ordering.
+        </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ============================================
+        // MOBILE MENU FUNCTIONALITY
+        // ============================================
+        const mobileMenuBtn = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMobileMenuBtn = document.getElementById('closeMobileMenu');
+        const mobileMenuOverlay = document.getElementById('mobileMenu');
+
+        // Open mobile menu
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.remove('opacity-0', 'invisible');
+                mobileMenu.classList.add('opacity-100', 'visible');
+                mobileMenu.querySelector('.absolute').classList.remove('translate-x-full');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        // Close mobile menu
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('opacity-100', 'visible');
+            mobileMenu.classList.add('opacity-0', 'invisible');
+            mobileMenu.querySelector('.absolute').classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        }
+
+        if (closeMobileMenuBtn) {
+            closeMobileMenuBtn.addEventListener('click', closeMobileMenu);
+        }
+
+        // Close menu when clicking on overlay
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', function(e) {
+                if (e.target === mobileMenuOverlay) {
+                    closeMobileMenu();
+                }
+            });
+        }
+
+        // Close menu when pressing Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('opacity-100')) {
+                closeMobileMenu();
+            }
+        });
+
+        // ============================================
+        // SHOPPING CART FUNCTIONALITY
+        // ============================================
+        const cartCountElement = document.getElementById('cartCount');
+        
+        // Initialize cart from localStorage or create empty cart
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Update cart count display
+        function updateCartCount() {
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCountElement.textContent = totalItems;
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+        
+        // Generate a unique ID for cart items
+        function generateCartItemId(name) {
+            return name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+        }
+        
+        // Add to cart function
+        function addToCart(itemName, itemPrice, itemImage) {
+            // Check if item already exists in cart
+            const existingItemIndex = cart.findIndex(item => item.name === itemName);
+            
+            if (existingItemIndex !== -1) {
+                // Increase quantity if item exists
+                cart[existingItemIndex].quantity += 1;
+            } else {
+                // Add new item to cart with unique ID
+                cart.push({
+                    id: generateCartItemId(itemName),
+                    name: itemName,
+                    price: parseFloat(itemPrice),
+                    image: itemImage,
+                    quantity: 1
+                });
+            }
+            
+            // Update cart count and save to localStorage
+            updateCartCount();
+            
+            // Show success message
+            showCartNotification(itemName);
+        }
+        
+        // Show notification when item is added to cart
+        function showCartNotification(itemName) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce flex items-center gap-2';
+            notification.innerHTML = `
+                <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                <span>Added "${itemName}" to cart!</span>
+            `;
+            document.body.appendChild(notification);
+            
+            // Remove notification after 2 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+        
+        // Add event listeners to all "Add to Cart" buttons
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const itemName = this.getAttribute('data-name');
+                const itemPrice = this.getAttribute('data-price');
+                const itemImage = this.getAttribute('data-image');
+                
+                addToCart(itemName, itemPrice, itemImage);
+            });
+        });
+        
+        // Initialize cart count on page load
+        updateCartCount();
+
+        // ============================================
+        // SMOOTH SCROLL FOR NAVIGATION LINKS
+        // ============================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId !== '#') {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

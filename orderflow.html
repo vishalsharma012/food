@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Order Flow - WhatsApp Ordering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ea2a33",
+                        "background-light": "#fcf8f8",
+                        "background-dark": "#1a0d0d",
+                        "card-light": "#ffffff",
+                        "card-dark": "#2a1515",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .mobile-menu { transition: all 0.3s ease; }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .animate-fade-out {
+            animation: fadeOut 0.3s ease-in-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#1b0e0e] dark:text-gray-100 min-h-screen flex flex-col">
+    <header class="sticky top-0 z-50 w-full border-b border-[#f3e7e8] dark:border-[#3a2020] bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md">
+        <div class="max-w-[1200px] mx-auto px-6 py-4 flex items-center justify-between">
+            <a class="flex items-center gap-3" href="index.html">
+                <div class="size-8 text-primary">
+                    <span class="material-symbols-outlined text-3xl">restaurant_menu</span>
+                </div>
+                <h2 class="text-xl font-extrabold tracking-tight text-[#1b0e0e] dark:text-white">SpiceRoute</h2>
+            </a>
+            
+            <nav class="hidden md:flex items-center gap-8" id="desktop-nav">
+                <a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="index.html">Home</a>
+                <a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="menu.html">Menu</a>
+                <a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="about.html">About</a>
+                <a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="contact.html">Contact</a>
+            </nav>
+            
+            <div class="flex items-center gap-4">
+                <a aria-label="Cart" class="relative p-2 text-primary dark:text-primary hover:text-red-700 transition-colors group" href="orderflow.html">
+                    <span class="material-symbols-outlined text-[28px] fill">shopping_cart</span>
+                    <span class="absolute top-0 right-0 -mr-1 -mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-[#1a0d0d]" id="cart-count">0</span>
+                </a>
+                <button class="md:hidden text-[#1b0e0e] dark:text-white" id="mobile-menu-button">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="md:hidden mobile-menu absolute top-full left-0 w-full bg-background-light dark:bg-background-dark border-b border-[#f3e7e8] dark:border-[#3a2020] hidden" id="mobile-menu">
+            <div class="flex flex-col p-4 space-y-4">
+                <a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors py-2" href="index.html">Home</a>
+                <a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors py-2" href="menu.html">Menu</a>
+                <a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors py-2" href="about.html">About</a>
+                <a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors py-2" href="contact.html">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1200px] w-full mx-auto px-6 py-10">
+        <div class="mb-8">
+            <a class="inline-flex items-center text-sm font-bold text-gray-500 hover:text-primary transition-colors mb-4" href="menu.html">
+                <span class="material-symbols-outlined text-lg mr-1">arrow_back</span>
+                Back to Menu
+            </a>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-[#1b0e0e] dark:text-white">Your Order</h1>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Cart Items Container -->
+                <div id="cart-items-container" class="space-y-6">
+                    <!-- Cart items will be dynamically inserted here -->
+                </div>
+
+                <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
+                    <h3 class="text-xl font-bold text-[#1b0e0e] dark:text-white mb-6">Your Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="col-span-1 md:col-span-2">
+                            <label class="block text-sm font-bold text-[#1b0e0e] dark:text-gray-200 mb-2" for="name">Full Name *</label>
+                            <input class="w-full rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-black/20 text-[#1b0e0e] dark:text-gray-200 focus:border-primary focus:ring-primary shadow-sm" id="name" placeholder="John Doe" type="text" required/>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-[#1b0e0e] dark:text-gray-200 mb-2" for="phone">Phone Number *</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500">+91</span>
+                                </div>
+                                <input 
+                                    class="w-full rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-black/20 text-[#1b0e0e] dark:text-gray-200 focus:border-primary focus:ring-primary shadow-sm pl-12" 
+                                    id="phone" 
+                                    placeholder="Enter 10-digit mobile number" 
+                                    type="tel" 
+                                    maxlength="10"
+                                    pattern="[6-9]{1}[0-9]{9}"
+                                    title="Please enter a valid 10-digit Indian mobile number"
+                                    required
+                                />
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span id="phone-indicator" class="text-xs text-gray-400 hidden">🇮🇳</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">Enter 10-digit Indian mobile number starting with 6, 7, 8, or 9</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-[#1b0e0e] dark:text-gray-200 mb-2" for="type">Order Type</label>
+                            <select class="w-full rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-black/20 text-[#1b0e0e] dark:text-gray-200 focus:border-primary focus:ring-primary shadow-sm" id="type">
+                                <option>Delivery</option>
+                                <option>Pickup</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1 md:col-span-2">
+                            <label class="block text-sm font-bold text-[#1b0e0e] dark:text-gray-200 mb-2" for="address">Delivery Address</label>
+                            <textarea class="w-full rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-black/20 text-[#1b0e0e] dark:text-gray-200 focus:border-primary focus:ring-primary shadow-sm" id="address" placeholder="Street address, apartment, etc." rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
+                    <label class="block text-lg font-bold text-[#1b0e0e] dark:text-white mb-3" for="notes">Special Instructions (Optional)</label>
+                    <textarea class="w-full rounded-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-black/20 text-[#1b0e0e] dark:text-gray-200 focus:border-primary focus:ring-primary shadow-sm" id="notes" placeholder="E.g., No onions, extra spicy..." rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1">
+                <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] dark:shadow-black/20 p-6 sticky top-28 border border-gray-100 dark:border-gray-800">
+                    <h3 class="text-xl font-bold text-[#1b0e0e] dark:text-white mb-6">Order Summary</h3>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-gray-600 dark:text-gray-400">
+                            <span>Subtotal</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600 dark:text-gray-400">
+                            <span>Taxes (5%)</span>
+                            <span id="taxes">$0.00</span>
+                        </div>
+                        <div class="h-px bg-gray-200 dark:bg-gray-700 my-4"></div>
+                        <div class="flex justify-between text-lg font-extrabold text-[#1b0e0e] dark:text-white">
+                            <span>Total</span>
+                            <span class="text-primary" id="total">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-4 rounded-lg text-sm mb-6 flex gap-3">
+                        <span class="material-symbols-outlined text-xl flex-shrink-0">info</span>
+                        <p>Order will be sent via WhatsApp. Payment is collected upon delivery or pickup.</p>
+                    </div>
+                    
+                    <button id="whatsapp-order-button" class="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 rounded-xl font-bold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 group disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span class="material-symbols-outlined text-[24px]">send</span>
+                        Send Order on WhatsApp
+                    </button>
+                    
+                    <p class="text-center text-xs text-gray-400 mt-4">By placing this order, you agree to our Terms of Service.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-background-light dark:bg-background-dark border-t border-[#f3e7e8] dark:border-[#3a2020] py-12 mt-auto">
+        <div class="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="col-span-1 md:col-span-2">
+                <div class="flex items-center gap-2 text-primary mb-4">
+                    <span class="material-symbols-outlined">restaurant_menu</span>
+                    <span class="font-bold text-lg text-[#1b0e0e] dark:text-white">SpiceRoute</span>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Delicious authentic cuisine prepared with love and traditional spices. Order now for a delightful dining experience.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-[#1b0e0e] dark:text-white mb-4">Contact Us</h4>
+                <div class="flex flex-col gap-2 text-sm text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">location_on</span>
+                        <span>123 Spice Avenue, Flavor Town</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">call</span>
+                        <span>+91 (555) 123-4567</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">mail</span>
+                        <span>hello@spiceroute.com</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold text-[#1b0e0e] dark:text-white mb-4">Opening Hours</h4>
+                <div class="flex flex-col gap-2 text-sm text-gray-500 dark:text-gray-400">
+                    <div class="flex justify-between max-w-[200px]">
+                        <span>Mon - Fri</span>
+                        <span>11am - 10pm</span>
+                    </div>
+                    <div class="flex justify-between max-w-[200px]">
+                        <span>Sat - Sun</span>
+                        <span>12pm - 11pm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-[1200px] mx-auto px-6 mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 text-center text-xs text-gray-400">
+            © 2026 SpiceRoute Restaurant. All rights reserved. Powered by WhatsApp Ordering.
+        </div>
+    </footer>
+
+    <script>
+        // Cart Management Class
+        class CartManager {
+            constructor() {
+                this.cart = JSON.parse(localStorage.getItem('cart')) || [];
+                this.taxRate = 0.05; // 5% tax
+                this.updateCartDisplay();
+                this.updateOrderSummary();
+                this.setupEventListeners();
+                this.updateCartCount();
+                this.setupPhoneValidation();
+            }
+
+            getCart() {
+                return this.cart;
+            }
+
+            getTotalItems() {
+                return this.cart.reduce((total, item) => total + item.quantity, 0);
+            }
+
+            getSubtotal() {
+                return this.cart.reduce((total, item) => total + (parseFloat(item.price) * item.quantity), 0);
+            }
+
+            getTaxes() {
+                return this.getSubtotal() * this.taxRate;
+            }
+
+            getTotal() {
+                return this.getSubtotal() + this.getTaxes();
+            }
+
+            updateQuantity(itemId, newQuantity) {
+                const item = this.cart.find(item => item.id === itemId);
+                if (item) {
+                    if (newQuantity <= 0) {
+                        this.removeItem(itemId);
+                    } else {
+                        item.quantity = newQuantity;
+                    }
+                    this.saveCart();
+                    this.updateCartDisplay();
+                    this.updateOrderSummary();
+                    this.updateCartCount();
+                }
+            }
+
+            removeItem(itemId) {
+                this.cart = this.cart.filter(item => item.id !== itemId);
+                this.saveCart();
+                this.updateCartDisplay();
+                this.updateOrderSummary();
+                this.updateCartCount();
+            }
+
+            clearCart() {
+                this.cart = [];
+                this.saveCart();
+                this.updateCartDisplay();
+                this.updateOrderSummary();
+                this.updateCartCount();
+            }
+
+            saveCart() {
+                localStorage.setItem('cart', JSON.stringify(this.cart));
+            }
+
+            updateCartCount() {
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) {
+                    const totalItems = this.getTotalItems();
+                    cartCountElement.textContent = totalItems;
+                    cartCountElement.classList.toggle('hidden', totalItems === 0);
+                }
+            }
+
+            // Setup Indian phone number validation
+            setupPhoneValidation() {
+                const phoneInput = document.getElementById('phone');
+                const phoneIndicator = document.getElementById('phone-indicator');
+                
+                if (phoneInput) {
+                    // Allow only digits
+                    phoneInput.addEventListener('input', (e) => {
+                        let value = e.target.value;
+                        
+                        // Remove any non-digit characters
+                        value = value.replace(/\D/g, '');
+                        
+                        // Limit to 10 digits
+                        if (value.length > 10) {
+                            value = value.substring(0, 10);
+                        }
+                        
+                        // Update the input value
+                        e.target.value = value;
+                        
+                        // Show/hide indicator based on validity
+                        this.validatePhoneNumber(value);
+                    });
+                    
+                    // Validate on blur
+                    phoneInput.addEventListener('blur', (e) => {
+                        this.validatePhoneNumber(e.target.value);
+                    });
+                    
+                    // Validate on focus
+                    phoneInput.addEventListener('focus', (e) => {
+                        phoneIndicator.classList.remove('hidden');
+                    });
+                    
+                    // Prevent paste of non-numeric values
+                    phoneInput.addEventListener('paste', (e) => {
+                        e.preventDefault();
+                        const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                        const numericText = pastedText.replace(/\D/g, '');
+                        if (numericText) {
+                            e.target.value = numericText.substring(0, 10);
+                            this.validatePhoneNumber(numericText.substring(0, 10));
+                        }
+                    });
+                }
+            }
+            
+            validatePhoneNumber(phoneNumber) {
+                const phoneInput = document.getElementById('phone');
+                const phoneIndicator = document.getElementById('phone-indicator');
+                
+                if (!phoneNumber) {
+                    phoneInput.classList.remove('border-green-500', 'border-red-500');
+                    phoneIndicator.classList.add('hidden');
+                    return false;
+                }
+                
+                // Indian mobile number validation: starts with 6,7,8,9 and exactly 10 digits
+                const phoneRegex = /^[6-9]\d{9}$/;
+                const isValid = phoneRegex.test(phoneNumber);
+                
+                if (isValid) {
+                    phoneInput.classList.remove('border-red-500');
+                    phoneInput.classList.add('border-green-500');
+                    phoneIndicator.textContent = '✓';
+                    phoneIndicator.classList.remove('text-gray-400', 'text-red-500');
+                    phoneIndicator.classList.add('text-green-500');
+                    phoneIndicator.classList.remove('hidden');
+                } else {
+                    phoneInput.classList.remove('border-green-500');
+                    phoneInput.classList.add('border-red-500');
+                    phoneIndicator.textContent = '✗';
+                    phoneIndicator.classList.remove('text-gray-400', 'text-green-500');
+                    phoneIndicator.classList.add('text-red-500');
+                    phoneIndicator.classList.remove('hidden');
+                }
+                
+                return isValid;
+            }
+
+            updateCartDisplay() {
+                const container = document.getElementById('cart-items-container');
+                if (!container) return;
+
+                if (this.cart.length === 0) {
+                    container.innerHTML = `
+                        <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 text-center">
+                            <span class="material-symbols-outlined text-4xl text-gray-400 mb-4">shopping_cart</span>
+                            <h3 class="text-xl font-bold text-gray-600 dark:text-gray-400 mb-2">Your cart is empty</h3>
+                            <p class="text-gray-500 dark:text-gray-400 mb-6">Add items from the menu to get started!</p>
+                            <a href="menu.html" class="inline-flex items-center gap-2 bg-primary hover:bg-red-700 text-white px-6 py-3 rounded-lg font-bold transition-colors">
+                                <span class="material-symbols-outlined">restaurant_menu</span>
+                                Browse Menu
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = this.cart.map(item => `
+                    <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 md:p-6 flex flex-col md:flex-row gap-6 items-center md:items-start cart-item" data-id="${item.id}">
+                        <div class="w-full md:w-32 h-32 rounded-lg bg-gray-100 dark:bg-gray-800 flex-shrink-0 overflow-hidden relative">
+                            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('${item.image}')"></div>
+                        </div>
+                        <div class="flex-grow w-full">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="text-xl font-bold text-[#1b0e0e] dark:text-white">${item.name}</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Price: $${parseFloat(item.price).toFixed(2)} each</p>
+                                </div>
+                                <span class="text-lg font-bold text-primary">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</span>
+                            </div>
+                            <div class="mt-4 flex flex-wrap items-center justify-between gap-4">
+                                <div class="flex items-center bg-gray-50 dark:bg-black/20 rounded-lg p-1 border border-gray-200 dark:border-gray-700">
+                                    <button class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-primary hover:bg-white dark:hover:bg-gray-800 rounded transition-colors decrease-btn" data-id="${item.id}">
+                                        <span class="material-symbols-outlined text-lg">remove</span>
+                                    </button>
+                                    <span class="w-10 text-center font-bold text-[#1b0e0e] dark:text-white quantity" data-id="${item.id}">${item.quantity}</span>
+                                    <button class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-primary hover:bg-white dark:hover:bg-gray-800 rounded transition-colors increase-btn" data-id="${item.id}">
+                                        <span class="material-symbols-outlined text-lg">add</span>
+                                    </button>
+                                </div>
+                                <button class="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1 remove-btn" data-id="${item.id}">
+                                    <span class="material-symbols-outlined text-lg">delete</span>
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            updateOrderSummary() {
+                const subtotal = this.getSubtotal();
+                const taxes = this.getTaxes();
+                const total = this.getTotal();
+
+                if (document.getElementById('subtotal')) {
+                    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+                }
+                if (document.getElementById('taxes')) {
+                    document.getElementById('taxes').textContent = `$${taxes.toFixed(2)}`;
+                }
+                if (document.getElementById('total')) {
+                    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+                }
+
+                // Enable/disable WhatsApp button
+                const whatsappButton = document.getElementById('whatsapp-order-button');
+                if (whatsappButton) {
+                    whatsappButton.disabled = this.cart.length === 0;
+                }
+            }
+
+            generateWhatsAppMessage() {
+                const name = document.getElementById('name').value || 'Customer';
+                const phone = document.getElementById('phone').value || 'Not provided';
+                const orderType = document.getElementById('type').value;
+                const address = document.getElementById('address').value || 'Not provided';
+                const notes = document.getElementById('notes').value || 'None';
+
+                let message = `*NEW ORDER FROM SPICEROUTE*\n\n`;
+                message += `*Customer Details:*\n`;
+                message += `Name: ${name}\n`;
+                message += `Phone: +91 ${phone}\n`;
+                message += `Order Type: ${orderType}\n`;
+                message += `Address: ${address}\n`;
+                message += `Special Instructions: ${notes}\n\n`;
+                message += `*Order Items:*\n`;
+
+                this.cart.forEach((item, index) => {
+                    message += `${index + 1}. ${item.name} x${item.quantity} - $${(parseFloat(item.price) * item.quantity).toFixed(2)}\n`;
+                });
+
+                message += `\n*Order Summary:*\n`;
+                message += `Subtotal: $${this.getSubtotal().toFixed(2)}\n`;
+                message += `Tax (5%): $${this.getTaxes().toFixed(2)}\n`;
+                message += `*Total: $${this.getTotal().toFixed(2)}*\n\n`;
+                message += `Thank you!`;
+
+                return encodeURIComponent(message);
+            }
+
+            showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.classList.add('animate-fade-out');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+
+            setupEventListeners() {
+                // Event delegation for dynamic cart items
+                document.addEventListener('click', (e) => {
+                    // Increase quantity button
+                    if (e.target.closest('.increase-btn')) {
+                        const button = e.target.closest('.increase-btn');
+                        const itemId = button.dataset.id;
+                        const item = this.cart.find(item => item.id === itemId);
+                        if (item) {
+                            this.updateQuantity(itemId, item.quantity + 1);
+                            this.showNotification(`Increased ${item.name} quantity to ${item.quantity + 1}`);
+                        }
+                    }
+
+                    // Decrease quantity button
+                    if (e.target.closest('.decrease-btn')) {
+                        const button = e.target.closest('.decrease-btn');
+                        const itemId = button.dataset.id;
+                        const item = this.cart.find(item => item.id === itemId);
+                        if (item) {
+                            if (item.quantity > 1) {
+                                this.updateQuantity(itemId, item.quantity - 1);
+                                this.showNotification(`Decreased ${item.name} quantity to ${item.quantity - 1}`);
+                            } else {
+                                this.removeItem(itemId);
+                                this.showNotification(`${item.name} removed from cart`, 'warning');
+                            }
+                        }
+                    }
+
+                    // Remove button
+                    if (e.target.closest('.remove-btn')) {
+                        const button = e.target.closest('.remove-btn');
+                        const itemId = button.dataset.id;
+                        const item = this.cart.find(item => item.id === itemId);
+                        if (item) {
+                            this.removeItem(itemId);
+                            this.showNotification(`${item.name} removed from cart`, 'warning');
+                        }
+                    }
+                });
+
+                // WhatsApp order button
+                const whatsappButton = document.getElementById('whatsapp-order-button');
+                if (whatsappButton) {
+                    whatsappButton.addEventListener('click', () => {
+                        if (this.cart.length === 0) {
+                            this.showNotification('Your cart is empty! Please add items first.', 'warning');
+                            return;
+                        }
+
+                        const phone = document.getElementById('phone').value;
+                        const name = document.getElementById('name').value;
+
+                        if (!name) {
+                            this.showNotification('Please enter your name before placing the order.', 'warning');
+                            document.getElementById('name').focus();
+                            document.getElementById('name').classList.add('border-red-500');
+                            return;
+                        }
+
+                        if (!phone) {
+                            this.showNotification('Please enter your phone number before placing the order.', 'warning');
+                            document.getElementById('phone').focus();
+                            document.getElementById('phone').classList.add('border-red-500');
+                            return;
+                        }
+
+                        // Validate Indian phone number
+                        const phoneRegex = /^[6-9]\d{9}$/;
+                        if (!phoneRegex.test(phone)) {
+                            this.showNotification('Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.', 'warning');
+                            document.getElementById('phone').focus();
+                            document.getElementById('phone').classList.add('border-red-500');
+                            return;
+                        }
+
+                        // Remove error classes
+                        document.getElementById('name').classList.remove('border-red-500');
+                        document.getElementById('phone').classList.remove('border-red-500');
+
+                        const message = this.generateWhatsAppMessage();
+                        // Using Indian WhatsApp number format
+                        const whatsappNumber = '919876543210'; // Replace with your actual WhatsApp number
+                        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+                        
+                        // Open WhatsApp in new tab
+                        window.open(whatsappUrl, '_blank');
+                        
+                        // Clear cart after order
+                        this.clearCart();
+                        this.showNotification('Order sent successfully! Your cart has been cleared.');
+                        
+                        // Clear form fields
+                        document.getElementById('name').value = '';
+                        document.getElementById('phone').value = '';
+                        document.getElementById('address').value = '';
+                        document.getElementById('notes').value = '';
+                    });
+                }
+
+                // Mobile menu functionality
+                const mobileMenuButton = document.getElementById('mobile-menu-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                
+                if (mobileMenuButton && mobileMenu) {
+                    mobileMenuButton.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        mobileMenu.classList.toggle('hidden');
+                        const icon = this.querySelector('span');
+                        icon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
+                    });
+
+                    // Close mobile menu when clicking outside
+                    document.addEventListener('click', (event) => {
+                        if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                            mobileMenu.classList.add('hidden');
+                            if (mobileMenuButton.querySelector('span')) {
+                                mobileMenuButton.querySelector('span').textContent = 'menu';
+                            }
+                        }
+                    });
+
+                    // Prevent mobile menu from closing when clicking inside it
+                    mobileMenu.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                    });
+                }
+
+                // Remove error classes when user starts typing
+                const nameInput = document.getElementById('name');
+                const phoneInput = document.getElementById('phone');
+                
+                if (nameInput) {
+                    nameInput.addEventListener('input', () => {
+                        nameInput.classList.remove('border-red-500');
+                    });
+                }
+                
+                if (phoneInput) {
+                    phoneInput.addEventListener('input', () => {
+                        phoneInput.classList.remove('border-red-500');
+                    });
+                }
+            }
+        }
+
+        // Initialize cart manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartManager = new CartManager();
+            
+            // Also expose cartManager globally for debugging if needed
+            window.cartManager = cartManager;
+        });
+    </script>
+</body>
+</html>

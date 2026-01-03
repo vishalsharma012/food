@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About Us - Restaurant Name</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#ea2a33",
+                    "background-light": "#fcf8f8",
+                    "background-dark": "#1a0d0d",
+                    "card-light": "#ffffff",
+                    "card-dark": "#2a1515",
+                },
+                fontFamily: {
+                    "display": ["Plus Jakarta Sans", "sans-serif"],
+                    "body": ["Noto Sans", "sans-serif"]
+                },
+                borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+            },
+        },
+    }
+</script>
+<style>
+    .mobile-menu { 
+        transition: all 0.3s ease; 
+        opacity: 0;
+        visibility: hidden;
+    }
+    .mobile-menu.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    .mobile-menu-sidebar {
+        transition: transform 0.3s ease;
+        transform: translateX(100%);
+    }
+    .mobile-menu.active .mobile-menu-sidebar {
+        transform: translateX(0);
+    }
+</style>
+</head>
+<body class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden font-display">
+<header class="sticky top-0 z-50 w-full border-b border-[#f3e7e8] bg-background-light/95 backdrop-blur-sm dark:bg-background-dark/95 dark:border-gray-800">
+<div class="px-4 md:px-10 py-3 flex items-center justify-between max-w-[1280px] mx-auto">
+<div class="flex items-center gap-3">
+<div class="size-10 flex items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined text-2xl">restaurant</span>
+</div>
+<h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    Spice<span class="text-primary">Route</span>
+</h1>
+</div>
+<div class="hidden md:flex flex-1 justify-end gap-8 items-center">
+<div class="flex items-center gap-9">
+<a class="text-[#1b0e0e] dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="index.html">Home</a>
+<a class="text-[#1b0e0e] dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="menu.html">Menu</a>
+<a class="text-primary text-sm font-bold leading-normal" href="about.html">About</a>
+<a class="text-[#1b0e0e] dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="contact.html">Contact</a>
+</div>
+
+<!-- Cart Icon for Desktop -->
+<a href="orderflow.html" class="relative text-[#1b0e0e] dark:text-gray-200 hover:text-primary transition-colors group">
+    <span class="material-symbols-outlined text-[28px]">shopping_cart</span>
+    <span id="cartCountDesktop" class="cart-badge absolute top-0 right-0 -mr-1 -mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-[#1a0d0d]">0</span>
+</a>
+
+<a href="menu.html" class="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary hover:bg-primary-dark text-white text-sm font-bold transition-all shadow-lg shadow-primary/20">
+<span>Order Now</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+</div>
+
+<!-- Mobile Header Actions -->
+<div class="flex items-center gap-4 md:hidden">
+    <!-- Cart Icon for Mobile -->
+    <a href="orderflow.html" class="relative text-[#1b0e0e] dark:text-white">
+        <span class="material-symbols-outlined text-[28px]">shopping_cart</span>
+        <span id="cartCountMobile" class="cart-badge absolute top-0 right-0 -mr-1 -mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-[#1a0d0d]">0</span>
+    </a>
+    
+    <!-- Mobile Menu Toggle -->
+    <button id="mobileMenuToggle" class="text-[#1b0e0e] dark:text-white">
+        <span class="material-symbols-outlined text-3xl">menu</span>
+    </button>
+</div>
+</div>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobileMenu" class="mobile-menu fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden">
+    <!-- Mobile Menu Sidebar -->
+    <div class="mobile-menu-sidebar absolute right-0 top-0 h-full w-3/4 max-w-sm bg-white dark:bg-card-dark shadow-2xl p-6">
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-3">
+                <div class="size-8 flex items-center justify-center rounded-lg bg-primary text-white">
+                    <span class="material-symbols-outlined text-2xl">restaurant</span>
+                </div>
+                <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">
+                    Spice<span class="text-primary">Route</span>
+                </h2>
+            </div>
+            <button id="closeMobileMenu" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+        
+        <nav class="flex flex-col gap-4 mb-8">
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-slate-700 dark:text-slate-300 font-semibold" href="index.html">
+                <span class="material-symbols-outlined">home</span>
+                Home
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-slate-700 dark:text-slate-300 font-semibold" href="menu.html">
+                <span class="material-symbols-outlined">restaurant_menu</span>
+                Menu
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary font-bold" href="about.html">
+                <span class="material-symbols-outlined">info</span>
+                About
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-slate-700 dark:text-slate-300 font-semibold" href="contact.html">
+                <span class="material-symbols-outlined">contact_support</span>
+                Contact
+            </a>
+        </nav>
+        
+        <a href="menu.html" class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary hover:bg-primary-dark text-white text-base font-bold transition-all shadow-lg shadow-primary/20">
+            <span>Order Now</span>
+            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+        </a>
+    </div>
+</div>
+</header>
+
+<!-- Rest of the about.html content remains EXACTLY the same -->
+<main class="flex-1 flex flex-col items-center w-full">
+<section class="w-full max-w-[1280px] px-4 md:px-10 py-6 md:py-10">
+<div class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-center justify-center p-8 relative overflow-hidden shadow-lg" data-alt="Close up of chef plating a gourmet dish with steam rising" style='background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCVnAjYoWtd4Fo0c2S4efaE3rChfax0i4dsUBgeAekL7ERmNiNg9mhDczjbh8PBGBIe0TlyyG6tYOt4NP9-vAsEX6xeuqYNPTxngYx-05n9zJOYOyKJk4MvsRkcq1TmEMFZJH6jCum7UwqxgGyBMhgBPJRbfLkNC_PKEkLcH4chGEElOsK0fbeAJ8s_0K1F8Kz4qYkVO437aEPg-DRzWc-h1sEwhvOkYusDMA4bA_JkpawqZ_w8myT2YPK2QzeC7bH2LFng1Uw5r531");'>
+<div class="flex flex-col gap-4 text-center max-w-3xl z-10">
+<div class="inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-bold uppercase tracking-wider mx-auto">
+<span class="material-symbols-outlined text-sm">history_edu</span> Est. 1998
+                    </div>
+<h1 class="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight">
+                        Crafting Flavors with Passion
+                    </h1>
+<p class="text-gray-100 text-base md:text-xl font-medium leading-relaxed max-w-2xl mx-auto">
+                        A culinary journey defined by family tradition, locally sourced ingredients, and an obsession with the perfect bite.
+                    </p>
+</div>
+</div>
+</section>
+<section class="w-full max-w-[960px] px-4 md:px-10 py-12">
+<div class="flex flex-col gap-4 text-center mb-12">
+<h2 class="text-[#1b0e0e] dark:text-white text-3xl font-bold">Our Journey</h2>
+<p class="text-gray-500 dark:text-gray-400">From a humble street cart to the city's favorite dining spot.</p>
+</div>
+<div class="grid grid-cols-[40px_1fr] gap-x-6 px-2 md:px-4">
+<div class="flex flex-col items-center gap-1 pt-3">
+<div class="bg-primary aspect-square rounded-full size-4 shadow-[0_0_0_4px_rgba(234,42,51,0.2)]"></div>
+<div class="w-[2px] bg-[#e7d0d1] dark:bg-gray-700 h-full grow"></div>
+</div>
+<div class="flex flex-1 flex-col pb-10">
+<span class="text-primary font-bold text-sm tracking-wide">1998</span>
+<h3 class="text-[#1b0e0e] dark:text-white text-xl font-bold leading-normal mb-2">The Beginning</h3>
+<div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+<p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
+                            We started with just three tables and a grandmother's recipe book. The aroma of our signature spices drew in the entire neighborhood.
+                        </p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="w-[2px] bg-[#e7d0d1] dark:bg-gray-700 h-8"></div>
+<div class="bg-white border-4 border-primary aspect-square rounded-full size-4"></div>
+<div class="w-[2px] bg-[#e7d0d1] dark:bg-gray-700 h-full grow"></div>
+</div>
+<div class="flex flex-1 flex-col pb-10">
+<span class="text-primary font-bold text-sm tracking-wide">2005</span>
+<h3 class="text-[#1b0e0e] dark:text-white text-xl font-bold leading-normal mb-2">The Expansion</h3>
+<div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col md:flex-row gap-4">
+<div class="w-full md:w-1/3 bg-gray-200 rounded-md h-32 bg-cover bg-center" data-alt="Old photo of the first restaurant location" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAuHKtncYeC8uiT_maDPbDiJZS70NgewKt0OMy8TZ5Ljsu1O0-lUdi8rQ4OH9Q0cn0K8aJBUvlAU8azSZteKouEtGOgJJQh7VUrNJihS6jpxzo98z5vF72fTTvOPi2Y1CcT6K5Q574oBBy3so3TUrDOnfdj0ydt-nc2xPkn0ppEg8rmllSu_EQXxjyqA0ci9Gfrvh-cCJb7itBCC2xLUPtjp-nlz9uFNpxmE8i-3P0SCjc2AeDNByj-IDEr4lfXltfMYznovkp-4fee");'></div>
+<p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed flex-1">
+                            With lines wrapping around the block, we moved to our current downtown location, preserving the intimate atmosphere while tripling our kitchen capacity.
+                        </p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="w-[2px] bg-[#e7d0d1] dark:bg-gray-700 h-8"></div>
+<div class="bg-white border-4 border-primary aspect-square rounded-full size-4"></div>
+<div class="w-[2px] bg-[#e7d0d1] dark:bg-gray-700 h-full grow"></div>
+</div>
+<div class="flex flex-1 flex-col pb-10">
+<span class="text-primary font-bold text-sm tracking-wide">2015</span>
+<h3 class="text-[#1b0e0e] dark:text-white text-xl font-bold leading-normal mb-2">Culinary Excellence</h3>
+<div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+<p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
+                            Our commitment to quality was recognized with the "Best Local Flavor" award, solidifying our place in the city's culinary map.
+                        </p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-1 pb-3">
+<div class="w-[2px] bg-[#e7d0d1] dark:bg-gray-700 h-8"></div>
+<div class="bg-primary aspect-square rounded-full size-4 shadow-[0_0_0_4px_rgba(234,42,51,0.2)]"></div>
+</div>
+<div class="flex flex-1 flex-col">
+<span class="text-primary font-bold text-sm tracking-wide">Today</span>
+<h3 class="text-[#1b0e0e] dark:text-white text-xl font-bold leading-normal mb-2">A Modern Classic</h3>
+<div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+<p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
+                            Continuing the legacy by embracing modern tastes while never forgetting our roots. Now serving you digitally with just a tap.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<section class="w-full bg-[#fcf8f8] dark:bg-[#1a0f0f] py-16">
+<div class="layout-content-container flex flex-col max-w-[1280px] mx-auto px-4 md:px-10">
+<div class="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+<div>
+<h2 class="text-[#1b0e0e] dark:text-white text-3xl font-bold leading-tight">Meet the Makers</h2>
+<p class="text-gray-500 dark:text-gray-400 mt-2">The talented hands behind your favorite meals.</p>
+</div>
+<button class="text-primary font-bold flex items-center gap-1 hover:gap-2 transition-all">
+                        Join our team <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+<div class="group flex flex-col gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="w-full bg-center bg-no-repeat aspect-[4/5] bg-cover rounded-lg overflow-hidden relative" data-alt="Portrait of Executive Chef Marco Rossi smiling in chef whites" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpBz2CZEX9MW3R05mN40p7sOe0TbhJ96ypNmwq3RmRvSexJl_6d_Gd74CdByS6DFIPU_z9lXwJXwNfarFWXrf2EXn-W3YfUXLtYNGlPEzWjMsUSRm_4BloZKYBcb8rqYiDPMFURkYQjsG8b-pV4s1suhl3xe5ghZotz1xMIuKXFmElubGqXwJRI_Mk-j4IWPuk7kMK0mxP1GwpWYVj52JtCjZoDpHEjXCp6m65P31Ela050lRgh3XQ3lt5KQPxC9Jt5tQptSesR_Q8");'>
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+</div>
+<div>
+<p class="text-[#1b0e0e] dark:text-white text-lg font-bold">Marco Rossi</p>
+<p class="text-primary text-sm font-medium uppercase tracking-wide">Executive Chef</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm mt-2 line-clamp-2">"Cooking is not just about ingredients, it's about the memory you create on the plate."</p>
+</div>
+</div>
+<div class="group flex flex-col gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="w-full bg-center bg-no-repeat aspect-[4/5] bg-cover rounded-lg overflow-hidden relative" data-alt="Portrait of Head Pastry Chef Elena Gomez working on a dessert" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDkRlou3p3QH3UiZmRetdc4gtNm1i6yMgxIjovSVSZH1BW4H75sglBMdlGDB_7kYHyYwknBzYGpdQK3Kv9Pc2gpY3mWXxNdErZjzrNwcoSDeI3MhlZHYhw1jrCRcinjRuRmnUQksKgIZ2G8DL_Sb0MrYkiHwAib0G3hAwBeEkHvoLJJ7sMgPFDwqfWFn1cxB2u58jdWJQwvLPpUvpPBEazGXzwRhFMAH3KAC3OoyQx80qKVhBnAH3sWb2IV5rvtEbTLhmZdlPvptRw3");'>
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+</div>
+<div>
+<p class="text-[#1b0e0e] dark:text-white text-lg font-bold">Elena Gomez</p>
+<p class="text-primary text-sm font-medium uppercase tracking-wide">Head of Pastry</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm mt-2 line-clamp-2">"Sweetness is the perfect punctuation to a great meal."</p>
+</div>
+</div>
+<div class="group flex flex-col gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="w-full bg-center bg-no-repeat aspect-[4/5] bg-cover rounded-lg overflow-hidden relative" data-alt="Portrait of Sous Chef David Chen prepping vegetables" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAHnmymqhWOCxEvnPjsltJGnaqNZ0gPN9gIzGQR5UyP65VZlr2pegtEXksfi_d7eAfFfFl8xeJqMsONH2VME0TFWo5IWhF2UJEZvZQW5xuU15pp8fLYX7q9r1Suv-H9Nzo_rJkQD_AVyfmGOB1PV9VCW7-Qh5JnnJzI-Q-cbCQxO-XYYNzDwtAUvx_3J8YfdzwD9A0yDeecxyJ4i61z1n1V-hpN097bfqKFIvAe5FMHZgZjloM_QpHeU44NgbXtRO-dIMZ2YvHU2faa");'>
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+</div>
+<div>
+<p class="text-[#1b0e0e] dark:text-white text-lg font-bold">David Chen</p>
+<p class="text-primary text-sm font-medium uppercase tracking-wide">Sous Chef</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm mt-2 line-clamp-2">"Precision and timing are the invisible ingredients in every dish."</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="w-full py-16 px-4 md:px-10 max-w-[1280px]">
+<div class="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-12 border border-[#f3e7e8] dark:border-gray-700 shadow-sm">
+<div class="flex flex-col gap-10">
+<div class="flex flex-col gap-4 text-center max-w-[720px] mx-auto">
+<h2 class="text-[#1b0e0e] dark:text-white tracking-tight text-3xl font-bold leading-tight">
+                            Our Quality Promise
+                        </h2>
+<p class="text-gray-600 dark:text-gray-300 text-base font-normal leading-normal">
+                            We refuse to compromise on quality. That's why we source fresh ingredients daily and adhere to the highest standards of safety.
+                        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="flex flex-1 gap-4 rounded-xl border border-[#e7d0d1] dark:border-gray-700 bg-[#fcf8f8] dark:bg-gray-900/50 p-6 flex-col items-center text-center hover:border-primary transition-colors cursor-default">
+<div class="text-primary bg-primary/10 p-3 rounded-full">
+<span class="material-symbols-outlined text-3xl">eco</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-[#1b0e0e] dark:text-white text-lg font-bold leading-tight">Farm Fresh</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Sourced daily from local organic farmers' markets for maximum flavor.</p>
+</div>
+</div>
+<div class="flex flex-1 gap-4 rounded-xl border border-[#e7d0d1] dark:border-gray-700 bg-[#fcf8f8] dark:bg-gray-900/50 p-6 flex-col items-center text-center hover:border-primary transition-colors cursor-default">
+<div class="text-primary bg-primary/10 p-3 rounded-full">
+<span class="material-symbols-outlined text-3xl">health_and_safety</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-[#1b0e0e] dark:text-white text-lg font-bold leading-tight">5-Star Hygiene</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Our kitchen adheres to the strictest international cleanliness standards.</p>
+</div>
+</div>
+<div class="flex flex-1 gap-4 rounded-xl border border-[#e7d0d1] dark:border-gray-700 bg-[#fcf8f8] dark:bg-gray-900/50 p-6 flex-col items-center text-center hover:border-primary transition-colors cursor-default">
+<div class="text-primary bg-primary/10 p-3 rounded-full">
+<span class="material-symbols-outlined text-3xl">verified</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="text-[#1b0e0e] dark:text-white text-lg font-bold leading-tight">Certified Quality</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Every ingredient is inspected and every dish is checked before serving.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="w-full bg-white dark:bg-[#1b0e0e] pt-16 pb-8 border-t border-[#f3e7e8] dark:border-gray-800">
+<div class="max-w-[1280px] mx-auto px-4 md:px-10">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2 text-[#1b0e0e] dark:text-white">
+<span class="material-symbols-outlined text-primary">restaurant_menu</span>
+<h2 class="text-lg font-bold">Gusto &amp; Fire</h2>
+</div>
+<p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Crafting unforgettable dining experiences with passion and tradition since 1998.</p>
+</div>
+<div>
+<h3 class="font-bold text-lg mb-4 text-[#1b0e0e] dark:text-white">Quick Links</h3>
+<ul class="flex flex-col gap-3 text-sm text-gray-600 dark:text-gray-400">
+<li><a class="hover:text-primary transition-colors" href="index.html">Home</a></li>
+<li><a class="hover:text-primary transition-colors" href="menu.html">Menu</a></li>
+<li><a class="hover:text-primary transition-colors" href="about.html">About Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="contact.html">Contact</a></li>
+</ul>
+</div>
+<div>
+<h3 class="font-bold text-lg mb-4 text-[#1b0e0e] dark:text-white">Contact</h3>
+<ul class="flex flex-col gap-3 text-sm text-gray-600 dark:text-gray-400">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-base">location_on</span> 123 Culinary Ave, Food City</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-base">call</span> +91 (555) 123-4567</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-base">mail</span> hello@gustofire.com</li>
+</ul>
+</div>
+<div>
+<h3 class="font-bold text-lg mb-4 text-[#1b0e0e] dark:text-white">Opening Hours</h3>
+<ul class="flex flex-col gap-3 text-sm text-gray-600 dark:text-gray-400">
+<li class="flex justify-between"><span>Mon - Fri</span> <span>11:00 AM - 10:00 PM</span></li>
+<li class="flex justify-between"><span>Sat - Sun</span> <span>10:00 AM - 11:00 PM</span></li>
+</ul>
+</div>
+</div>
+<div class="border-t border-[#f3e7e8] dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+<p>© 2026 Gusto &amp; Fire. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</div>
+</footer>
+
+<script>
+    // Cart Management Functions (Same as menu.html)
+    function getCartItems() {
+        try {
+            const cart = localStorage.getItem('cart');
+            return cart ? JSON.parse(cart) : [];
+        } catch (e) {
+            console.error('Error reading cart from localStorage:', e);
+            return [];
+        }
+    }
+
+    function calculateCartTotal() {
+        const cartItems = getCartItems();
+        return cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
+    }
+
+    function updateCartBadges() {
+        const totalItems = calculateCartTotal();
+        const badges = document.querySelectorAll('.cart-badge');
+        
+        badges.forEach(badge => {
+            badge.textContent = totalItems;
+            
+            // Hide badge if no items
+            if (totalItems === 0) {
+                badge.style.display = 'none';
+            } else {
+                badge.style.display = 'flex';
+            }
+        });
+    }
+
+    // Mobile Menu Functionality (Same as menu.html)
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        // Initialize cart badges
+        updateCartBadges();
+        
+        // Open mobile menu
+        mobileMenuToggle.addEventListener('click', function() {
+            mobileMenu.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // Close mobile menu
+        closeMobileMenu.addEventListener('click', function() {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Close mobile menu when clicking on overlay
+        mobileMenu.addEventListener('click', function(e) {
+            if (e.target === mobileMenu) {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close mobile menu when pressing Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Listen for storage events to update cart in real-time
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'cart') {
+                updateCartBadges();
+            }
+        });
+        
+        // Also update cart when page becomes visible (in case of multiple tabs)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                updateCartBadges();
+            }
+        });
+    });
+
+    // Update cart badges periodically to catch changes from other tabs
+    setInterval(updateCartBadges, 1000);
+</script>
+
+</body>
+</html>
