@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Restaurant Home Page - WhatsApp Ordering</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ea2a33",
+                        "primary-dark": "#d62029",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#211111",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#2d1b1b",
+                        "whatsapp-green": "#25D366",
+                        "whatsapp-green-dark": "#128C7E",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.375rem", 
+                        "lg": "0.5rem", 
+                        "xl": "0.75rem", 
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                    animation: {
+                        'scroll': 'scroll 40s linear infinite',
+                    },
+                    keyframes: {
+                        scroll: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(calc(-100% / 2))' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased overflow-x-hidden selection:bg-primary selection:text-white">
+<header class="sticky top-0 z-50 w-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-20">
+<div class="flex items-center gap-3">
+<div class="size-10 flex items-center justify-center rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined text-2xl">restaurant</span>
+</div>
+<h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    Spice<span class="text-primary">Route</span>
+</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary text-sm font-bold leading-normal" href="index.html">Home</a>
+<a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="menu.html">Menu</a>
+<a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="about.html">About</a>
+<a class="text-sm font-semibold text-slate-700 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="contact.html">Contact</a>
+</nav>
+<div class="flex items-center gap-2 sm:gap-4">
+<a aria-label="View Cart" class="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-200/50 dark:hover:bg-white/5 transition-colors group mr-1 sm:mr-0" href="orderflow.html">
+<span class="material-symbols-outlined text-[24px] text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors">shopping_cart</span>
+<span id="cartCount" class="absolute top-0 right-0 flex h-5 w-5 -mt-0.5 -mr-0.5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white ring-2 ring-background-light dark:ring-background-dark shadow-sm">
+                        0
+                    </span>
+</a>
+<a href="menu.html" class="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary hover:bg-primary-dark text-white text-sm font-bold transition-all shadow-lg shadow-primary/20">
+<span>Order Now</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+<button id="mobileMenuButton" class="md:hidden p-2 text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobileMenu" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm opacity-0 invisible transition-all duration-300 md:hidden">
+    <div class="absolute right-0 top-0 h-full w-3/4 max-w-sm bg-white dark:bg-surface-dark shadow-2xl transform translate-x-full transition-transform duration-300">
+        <div class="p-6 h-full overflow-y-auto">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 flex items-center justify-center rounded-lg bg-primary text-white">
+                        <span class="material-symbols-outlined text-2xl">restaurant</span>
+                    </div>
+                    <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">
+                        Spice<span class="text-primary">Route</span>
+                    </h2>
+                </div>
+                <button id="closeMobileMenu" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+            
+            <nav class="flex flex-col gap-4 mb-8">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary font-bold" href="index.html">
+                    <span class="material-symbols-outlined">home</span>
+                    Home
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-slate-700 dark:text-slate-300 font-semibold" href="menu.html">
+                    <span class="material-symbols-outlined">restaurant_menu</span>
+                    Menu
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-slate-700 dark:text-slate-300 font-semibold" href="about.html">
+                    <span class="material-symbols-outlined">info</span>
+                    About
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-slate-700 dark:text-slate-300 font-semibold" href="contact.html">
+                    <span class="material-symbols-outlined">contact_support</span>
+                    Contact
+                </a>
+            </nav>
+            
+            <a href="orderflow.html" class="w-full flex items-center justify-center gap-3 h-14 px-8 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold transition-all shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                <span>My Order</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<main class="flex-grow flex flex-col">
+<section class="relative pt-10 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+<div class="flex flex-col gap-6 max-w-2xl text-center lg:text-left mx-auto lg:mx-0 order-2 lg:order-1">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 dark:bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider w-fit mx-auto lg:mx-0">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                        Taking Orders Now
+                    </div>
+<h1 class="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight text-slate-900 dark:text-white">
+                        Taste the Best <br class="hidden lg:block"/>
+<span class="text-primary">Cuisine</span> in Town.
+                    </h1>
+<p class="text-lg sm:text-xl text-slate-600 dark:text-slate-400 font-medium leading-relaxed max-w-lg mx-auto lg:mx-0">
+                        Fresh ingredients, authentic recipes, and chef-curated meals delivered straight to your door via WhatsApp.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start">
+<a href="orderflow.html" class="group flex items-center justify-center gap-3 h-14 px-8 rounded-lg bg-primary hover:bg-primary-dark text-white text-base font-bold transition-all shadow-xl shadow-primary/25 hover:shadow-2xl hover:-translate-y-0.5">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span>My Order</span>
+</a>
+<a href="menu.html" class="flex items-center justify-center gap-3 h-14 px-8 rounded-lg bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 hover:border-primary/50 text-slate-900 dark:text-white text-base font-bold transition-all hover:bg-gray-50 dark:hover:bg-gray-800">
+<span>View Menu</span>
+</a>
+</div>
+<a href="review.html">
+<div class="flex items-center justify-center lg:justify-start gap-4 pt-4">
+<div class="flex -space-x-3">
+<img alt="Customer Avatar" class="inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-background-dark object-cover" data-alt="User avatar 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0ldxiLMdlSaLa3QPHZAITp6b4Lc3OB9xbslZWxFqXYSQ3mOu-TBqyTBno1gDejMhr4krFhW8_Y7V-_OGsdvslfhkQqppj6ztWM6T90BCDBq5wZEmSdG6huW7X2Td33p9_lfpCSteTvlVZP8J-vBoIAvNwMzRMR0u-_lHll_DpZM8CJu56_amIRQzbkAYxxipZ3swr6-OD2N1MQGRHonmgE0fTHi2XEwZPwyEv8esMSGmaWqaJUIH7eh-GZ1gNYUwr6Np8gdXulkoz"/>
+<img alt="Customer Avatar" class="inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-background-dark object-cover" data-alt="User avatar 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBzAOAtQGQBhI0bSagAwEVxiuZG14f7cmdLRWwI1Hwp6eDEGy2Hl5WNf2OC3bph2QTZwvmjJyqZbOXRhITxVR9ZNoCsiLv_BOjyosiiJDqVHGEOK1H5TqnL2DIAlkLPbwI81fz8qIjF1O45iLlqUn2qiV8VizTqioLqv_BIrjcVJr3gbLqIyvbbMT7a4tF92uphniaGcLHmxua8DPb5TmsQiyM2ZLgBoBovlTplK8VOoaHcgTkugAvwP5aqdM31vvdfIdfdxOZLTjN"/>
+<img alt="Customer Avatar" class="inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-background-dark object-cover" data-alt="User avatar 3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD80KpbdOeuCcecxcayrKTOT_i_MClQnEgHxFVqtCM_KYk__38O6fjsKrbgn5QcM_os1ay7VyRDPDmZ2vLvOHFkGHkqDFXY_RX18Gp-B0rPgdqgdc4H5PMSDo5ZV4z2Loz90zaXVfNgP7BQXTwCc7WMhfiM9WQhK0ORemcTyEotN5hOddLckASgwgiC_7ZrZFHNEEaWzCuck9UeHo3P5viam5YtX89TutG7Wluj4YNu6B_Ga_rx35uvJCwQFFrPnsaXWfaOXFioida0"/>
+</div>
+<div class="text-sm">
+<div class="flex text-yellow-500">
+<span class="material-symbols-outlined text-[18px] filled">star</span>
+<span class="material-symbols-outlined text-[18px] filled">star</span>
+<span class="material-symbols-outlined text-[18px] filled">star</span>
+<span class="material-symbols-outlined text-[18px] filled">star</span>
+<span class="material-symbols-outlined text-[18px] filled">star</span>
+</div>
+<span class="text-slate-600 dark:text-slate-400 font-medium">1000+ Happy Customers</span>
+</div>
+</div>
+</a>
+</div>
+<div class="relative order-1 lg:order-2">
+<div class="absolute inset-0 bg-primary/20 blur-[100px] rounded-full opacity-50 pointer-events-none transform translate-y-10"></div>
+<div class="relative w-full aspect-square md:aspect-[4/3] lg:aspect-square rounded-3xl overflow-hidden shadow-2xl rotate-1 hover:rotate-0 transition-transform duration-700 ease-out">
+<div class="w-full h-full bg-center bg-cover bg-no-repeat" data-alt="Delicious grilled meat dish with vegetables on a dark plate" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC9M95L3EjAF_aP32L82KeJsXiJTBXzWgworPTRgDUOP3ykeyoeAwF9wDutoc_guFyrZ_6CjQC9OPOBHWg8hsfvGYZbBGQN-bph6w2jDV9TZMQw-_UcZPVipMu294do7lHy8NpcQkyZUbef5ufbhfA76lqMM3TmTRWczJ0PqmBhv5LRNEVP54cfALC04tuQA2gUqrmwHQPrTAewEadARFF4Fl2YQRj-9BcOUxyQTtdaqmH0PrRrWxq5q5CiIFf4Al9nrpfR-n2wQof1');"></div>
+<div class="absolute bottom-6 left-6 right-6 sm:right-auto sm:w-auto p-4 bg-white/90 dark:bg-surface-dark/90 backdrop-blur-md rounded-xl shadow-lg border border-white/20 flex items-center gap-4">
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">restaurant_menu</span>
+</div>
+<div>
+<p class="font-bold text-slate-900 dark:text-white">Chef's Special</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Available Today</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-16 bg-white dark:bg-surface-dark border-y border-gray-100 dark:border-gray-800">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="max-w-3xl mx-auto text-center mb-12">
+<h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">Why Choose Us?</h2>
+<p class="text-slate-600 dark:text-slate-400">We pride ourselves on quality, speed, and unforgettable taste.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="flex flex-col items-center text-center p-6 rounded-2xl bg-background-light dark:bg-background-dark border border-gray-100 dark:border-gray-800 transition-all hover:shadow-lg hover:-translate-y-1">
+<div class="h-16 w-16 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">star</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Top Rated</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        4.9/5 stars on Google Reviews based on hundreds of happy customers.
+                    </p>
+</div>
+<div class="flex flex-col items-center text-center p-6 rounded-2xl bg-background-light dark:bg-background-dark border border-gray-100 dark:border-gray-800 transition-all hover:shadow-lg hover:-translate-y-1">
+<div class="h-16 w-16 rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">verified_user</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Hygiene Certified</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Strict adherence to international safety protocols for clean, healthy meals.
+                    </p>
+</div>
+<div class="flex flex-col items-center text-center p-6 rounded-2xl bg-background-light dark:bg-background-dark border border-gray-100 dark:border-gray-800 transition-all hover:shadow-lg hover:-translate-y-1">
+<div class="h-16 w-16 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-3xl">schedule</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Fast Delivery</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Hot and fresh food delivered to your doorstep in 30 minutes guaranteed.
+                    </p>
+</div>
+</div>
+</div>
+</section>
+<section class="py-20 bg-background-light dark:bg-background-dark overflow-hidden">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-end justify-between mb-10">
+<div>
+<h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-2">Popular Dishes</h2>
+<p class="text-slate-600 dark:text-slate-400">Our customer's absolute favorites this week.</p>
+</div>
+<a class="hidden sm:flex items-center gap-1 text-primary font-bold hover:text-primary-dark transition-colors" href="menu.html">
+                    View Full Menu
+                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+</div>
+</div>
+<div class="relative w-full overflow-x-auto no-scrollbar pb-8 group">
+<div class="flex gap-5 px-4 w-max animate-scroll group-hover:[animation-play-state:paused]">
+<!-- Dish 1 -->
+<div class="w-60 shrink-0">
+<div class="group/card relative bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 h-full flex flex-col">
+<div class="relative aspect-[4/3] overflow-hidden shrink-0">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover/card:scale-110" data-alt="Juicy gourmet burger with cheese and lettuce" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCSt2sa5Ww-pV399X0tg4oEvM4-cHToCKEWc_RZiwOhkIFM2LrcmZpCDYSi4QZibL5cRDEAKorC_8vj-qOXdO4mG6TFpEycgjmu3Ofr9zz2sMTbEw7o7JZk8wq0QYB8m0aTMedh69H5sU8fcfoLfaPi8hORh-vdkhERaL--jPhCDRGrBIqJEhnVs5_NkRkOXSqRoj-Tun-rsvoNN-RSrAs1bnMblOih0n6tgIZkwpkHkXcxqMkAZBOtXKfLzRu1O4om2VUhx3bOt7Ne');"></div>
+<div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-3 py-1 rounded-full text-slate-900 dark:text-white shadow-sm">
+                    Best Seller
+                </div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-white line-clamp-1">Signature Burger</h3>
+<span class="text-primary font-bold">$12.99</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
+                    Double beef patty, cheddar cheese, caramelized onions, and our secret sauce.
+                </p>
+<div class="mt-auto">
+<button class="add-to-cart w-full py-2 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-xs transition-colors flex items-center justify-center gap-2" data-name="Signature Burger" data-price="12.99" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuCSt2sa5Ww-pV399X0tg4oEvM4-cHToCKEWc_RZiwOhkIFM2LrcmZpCDYSi4QZibL5cRDEAKorC_8vj-qOXdO4mG6TFpEycgjmu3Ofr9zz2sMTbEw7o7JZk8wq0QYB8m0aTMedh69H5sU8fcfoLfaPi8hORh-vdkhERaL--jPhCDRGrBIqJEhnVs5_NkRkOXSqRoj-Tun-rsvoNN-RSrAs1bnMblOih0n6tgIZkwpkHkXcxqMkAZBOtXKfLzRu1O4om2VUhx3bOt7Ne">
+<span class="material-symbols-outlined text-base">add_shopping_cart</span>
+                        Add to Order
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Dish 2 -->
+<div class="w-60 shrink-0">
+<div class="group/card relative bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 h-full flex flex-col">
+<div class="relative aspect-[4/3] overflow-hidden shrink-0">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover/card:scale-110" data-alt="Spicy pasta dish with red sauce and basil" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjOxMbIpiLpZwslfEn3KG3iSzaJKmK2qw3M_z096LWGkEZlGTrSkuAJvuthmsklI4ZL8Q31eER8CXxwZA0nd5pRTwa7hbPq9fqz84-7BAdPijU-HCboBRcL1_gXpKjtol5_qCOr8hwj-yPgaYpLie1wOqGMenzcWeKU9N88EqrcaZKHt5_7FlqLHpuBR2i3pBCTYfkzDZ077LrWBJtg6O6vT8jpYAPxko2FcZ2Z-S9XP4XXbTXXVT0T1hLoEGHEcOSNo_PAzyilh8G');"></div>
+<div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-3 py-1 rounded-full text-slate-900 dark:text-white shadow-sm">
+                    Spicy
+                </div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-white line-clamp-1">Spicy Arrabbiata</h3>
+<span class="text-primary font-bold">$14.50</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
+                    Fresh homemade pasta tossed in a spicy tomato garlic sauce with fresh basil.
+                </p>
+<div class="mt-auto">
+<button class="add-to-cart w-full py-2 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-xs transition-colors flex items-center justify-center gap-2" data-name="Spicy Arrabbiata" data-price="14.50" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuDjOxMbIpiLpZwslfEn3KG3iSzaJKmK2qw3M_z096LWGkEZlGTrSkuAJvuthmsklI4ZL8Q31eER8CXxwZA0nd5pRTwa7hbPq9fqz84-7BAdPijU-HCboBRcL1_gXpKjtol5_qCOr8hwj-yPgaYpLie1wOqGMenzcWeKU9N88EqrcaZKHt5_7FlqLHpuBR2i3pBCTYfkzDZ077LrWBJtg6O6vT8jpYAPxko2FcZ2Z-S9XP4XXbTXXVT0T1hLoEGHEcOSNo_PAzyilh8G">
+<span class="material-symbols-outlined text-base">add_shopping_cart</span>
+                        Add to Order
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Dish 3 -->
+<div class="w-60 shrink-0">
+<div class="group/card relative bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 h-full flex flex-col">
+<div class="relative aspect-[4/3] overflow-hidden shrink-0">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover/card:scale-110" data-alt="Grilled salmon steak with asparagus" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCXPOGynt5ixI6i8Dfjqfxe70tNWm-EBwKoJOYZkw2axhSmKFdamNxM_7SbpQdK0ION46C1lxrF_t2eOIGhx2KVc9c_melkh8RE7VDbIlOqFcpOwPWZDMZhYQcmnXjhrq3nlpYr0GDWz8-jINpTuc_pQ1BTKUY9opacXfZJONWSFKApch_UAP4R5Am8aZ-KlHpl-Jtb8RPlzfudf3Fwi3BnAUuN-NFQ0q4MdTwDUYEc2QuFGQ4f26PLhX3wICMC1BoNWqrw4n02nl_Y');"></div>
+<div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-3 py-1 rounded-full text-slate-900 dark:text-white shadow-sm">
+                    Healthy
+                </div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-white line-clamp-1">Grilled Salmon</h3>
+<span class="text-primary font-bold">$18.00</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
+                    Atlantic salmon fillet grilled to perfection, served with asparagus and lemon butter.
+                </p>
+<div class="mt-auto">
+<button class="add-to-cart w-full py-2 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-xs transition-colors flex items-center justify-center gap-2" data-name="Grilled Salmon" data-price="18.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuCXPOGynt5ixI6i8Dfjqfxe70tNWm-EBwKoJOYZkw2axhSmKFdamNxM_7SbpQdK0ION46C1lxrF_t2eOIGhx2KVc9c_melkh8RE7VDbIlOqFcpOwPWZDMZhYQcmnXjhrq3nlpYr0GDWz8-jINpTuc_pQ1BTKUY9opacXfZJONWSFKApch_UAP4R5Am8aZ-KlHpl-Jtb8RPlzfudf3Fwi3BnAUuN-NFQ0q4MdTwDUYEc2QuFGQ4f26PLhX3wICMC1BoNWqrw4n02nl_Y">
+<span class="material-symbols-outlined text-base">add_shopping_cart</span>
+                        Add to Order
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Dish 4 -->
+<div class="w-60 shrink-0">
+<div class="group/card relative bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 h-full flex flex-col">
+<div class="relative aspect-[4/3] overflow-hidden shrink-0">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover/card:scale-110" data-alt="Classic pepperoni pizza with melted cheese" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCrGUMF5dCIao0H3DejeBlJkYDo5Ba9H9Ez84Xtibh-h_wFQWsntLA1FgY7Pou7bNr2aQAW_zmsRNWsuTXTBXjMS9d-aV-0rEXFhFBq6L8gBVxIJR2AGx2zfy9IoWFwCV5_fbfnXV4u1sbNBFu3s4RlWuXnTE1MUOsv_XpIPIOiw2uC1eDYzgMWDJaJ_Shvs4DuGIr691oghABB8c9WTUwHjuAHZRHpnSUJmjVzv03LAhDKwu32O0PerKGVcZhebbg2yQ_ZQt45GvZJ');"></div>
+<div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-3 py-1 rounded-full text-slate-900 dark:text-white shadow-sm">
+                    Classic
+                </div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-white line-clamp-1">Pepperoni Pizza</h3>
+<span class="text-primary font-bold">$15.00</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
+                    Hand-tossed crust topped with rich tomato sauce, mozzarella cheese, and pepperoni.
+                </p>
+<div class="mt-auto">
+<button class="add-to-cart w-full py-2 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-xs transition-colors flex items-center justify-center gap-2" data-name="Pepperoni Pizza" data-price="15.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuCrGUMF5dCIao0H3DejeBlJkYDo5Ba9H9Ez84Xtibh-h_wFQWsntLA1FgY7Pou7bNr2aQAW_zmsRNWsuTXTBXjMS9d-aV-0rEXFhFBq6L8gBVxIJR2AGx2zfy9IoWFwCV5_fbfnXV4u1sbNBFu3s4RlWuXnTE1MUOsv_XpIPIOiw2uC1eDYzgMWDJaJ_Shvs4DuGIr691oghABB8c9WTUwHjuAHZRHpnSUJmjVzv03LAhDKwu32O0PerKGVcZhebbg2yQ_ZQt45GvZJ">
+<span class="material-symbols-outlined text-base">add_shopping_cart</span>
+                        Add to Order
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Duplicate dishes for infinite scroll effect -->
+<!-- Dish 1 Duplicate -->
+<div class="w-60 shrink-0">
+<div class="group/card relative bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 h-full flex flex-col">
+<div class="relative aspect-[4/3] overflow-hidden shrink-0">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover/card:scale-110" data-alt="Juicy gourmet burger with cheese and lettuce" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCSt2sa5Ww-pV399X0tg4oEvM4-cHToCKEWc_RZiwOhkIFM2LrcmZpCDYSi4QZibL5cRDEAKorC_8vj-qOXdO4mG6TFpEycgjmu3Ofr9zz2sMTbEw7o7JZk8wq0QYB8m0aTMedh69H5sU8fcfoLfaPi8hORh-vdkhERaL--jPhCDRGrBIqJEhnVs5_NkRkOXSqRoj-Tun-rsvoNN-RSrAs1bnMblOih0n6tgIZkwpkHkXcxqMkAZBOtXKfLzRu1O4om2VUhx3bOt7Ne');"></div>
+<div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-3 py-1 rounded-full text-slate-900 dark:text-white shadow-sm">
+                    Best Seller
+                </div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-white line-clamp-1">Signature Burger</h3>
+<span class="text-primary font-bold">$12.99</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
+                    Double beef patty, cheddar cheese, caramelized onions, and our secret sauce.
+                </p>
+<div class="mt-auto">
+<button class="add-to-cart w-full py-2 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-xs transition-colors flex items-center justify-center gap-2" data-name="Signature Burger" data-price="12.99" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuCSt2sa5Ww-pV399X0tg4oEvM4-cHToCKEWc_RZiwOhkIFM2LrcmZpCDYSi4QZibL5cRDEAKorC_8vj-qOXdO4mG6TFpEycgjmu3Ofr9zz2sMTbEw7o7JZk8wq0QYB8m0aTMedh69H5sU8fcfoLfaPi8hORh-vdkhERaL--jPhCDRGrBIqJEhnVs5_NkRkOXSqRoj-Tun-rsvoNN-RSrAs1bnMblOih0n6tgIZkwpkHkXcxqMkAZBOtXKfLzRu1O4om2VUhx3bOt7Ne">
+<span class="material-symbols-outlined text-base">add_shopping_cart</span>
+                        Add to Order
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Dish 2 Duplicate -->
+<div class="w-60 shrink-0">
+<div class="group/card relative bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 h-full flex flex-col">
+<div class="relative aspect-[4/3] overflow-hidden shrink-0">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover/card:scale-110" data-alt="Spicy pasta dish with red sauce and basil" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjOxMbIpiLpZwslfEn3KG3iSzaJKmK2qw3M_z096LWGkEZlGTrSkuAJvuthmsklI4ZL8Q31eER8CXxwZA0nd5pRTwa7hbPq9fqz84-7BAdPijU-HCboBRcL1_gXpKjtol5_qCOr8hwj-yPgaYpLie1wOqGMenzcWeKU9N88EqrcaZKHt5_7FlqLHpuBR2i3pBCTYfkzDZ077LrWBJtg6O6vT8jpYAPxko2FcZ2Z-S9XP4XXbTXXVT0T1hLoEGHEcOSNo_PAzyilh8G');"></div>
+<div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-3 py-1 rounded-full text-slate-900 dark:text-white shadow-sm">
+                    Spicy
+                </div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-white line-clamp-1">Spicy Arrabbiata</h3>
+<span class="text-primary font-bold">$14.50</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
+                    Fresh homemade pasta tossed in a spicy tomato garlic sauce with fresh basil.
+                </p>
+<div class="mt-auto">
+<button class="add-to-cart w-full py-2 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-xs transition-colors flex items-center justify-center gap-2" data-name="Spicy Arrabbiata" data-price="14.50" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuDjOxMbIpiLpZwslfEn3KG3iSzaJKmK2qw3M_z096LWGkEZlGTrSkuAJvuthmsklI4ZL8Q31eER8CXxwZA0nd5pRTwa7hbPq9fqz84-7BAdPijU-HCboBRcL1_gXpKjtol5_qCOr8hwj-yPgaYpLie1wOqGMenzcWeKU9N88EqrcaZKHt5_7FlqLHpuBR2i3pBCTYfkzDZ077LrWBJtg6O6vT8jpYAPxko2FcZ2Z-S9XP4XXbTXXVT0T1hLoEGHEcOSNo_PAzyilh8G">
+<span class="material-symbols-outlined text-base">add_shopping_cart</span>
+                        Add to Order
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Dish 3 Duplicate -->
+<div class="w-60 shrink-0">
+<div class="group/card relative bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 h-full flex flex-col">
+<div class="relative aspect-[4/3] overflow-hidden shrink-0">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover/card:scale-110" data-alt="Grilled salmon steak with asparagus" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCXPOGynt5ixI6i8Dfjqfxe70tNWm-EBwKoJOYZkw2axhSmKFdamNxM_7SbpQdK0ION46C1lxrF_t2eOIGhx2KVc9c_melkh8RE7VDbIlOqFcpOwPWZDMZhYQcmnXjhrq3nlpYr0GDWz8-jINpTuc_pQ1BTKUY9opacXfZJONWSFKApch_UAP4R5Am8aZ-KlHpl-Jtb8RPlzfudf3Fwi3BnAUuN-NFQ0q4MdTwDUYEc2QuFGQ4f26PLhX3wICMC1BoNWqrw4n02nl_Y');"></div>
+<div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-3 py-1 rounded-full text-slate-900 dark:text-white shadow-sm">
+                    Healthy
+                </div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-white line-clamp-1">Grilled Salmon</h3>
+<span class="text-primary font-bold">$18.00</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
+                    Atlantic salmon fillet grilled to perfection, served with asparagus and lemon butter.
+                </p>
+<div class="mt-auto">
+<button class="add-to-cart w-full py-2 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-xs transition-colors flex items-center justify-center gap-2" data-name="Grilled Salmon" data-price="18.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuCXPOGynt5ixI6i8Dfjqfxe70tNWm-EBwKoJOYZkw2axhSmKFdamNxM_7SbpQdK0ION46C1lxrF_t2eOIGhx2KVc9c_melkh8RE7VDbIlOqFcpOwPWZDMZhYQcmnXjhrq3nlpYr0GDWz8-jINpTuc_pQ1BTKUY9opacXfZJONWSFKApch_UAP4R5Am8aZ-KlHpl-Jtb8RPlzfudf3Fwi3BnAUuN-NFQ0q4MdTwDUYEc2QuFGQ4f26PLhX3wICMC1BoNWqrw4n02nl_Y">
+<span class="material-symbols-outlined text-base">add_shopping_cart</span>
+                        Add to Order
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Dish 4 Duplicate -->
+<div class="w-60 shrink-0">
+<div class="group/card relative bg-white dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-800 h-full flex flex-col">
+<div class="relative aspect-[4/3] overflow-hidden shrink-0">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover/card:scale-110" data-alt="Classic pepperoni pizza with melted cheese" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCrGUMF5dCIao0H3DejeBlJkYDo5Ba9H9Ez84Xtibh-h_wFQWsntLA1FgY7Pou7bNr2aQAW_zmsRNWsuTXTBXjMS9d-aV-0rEXFhFBq6L8gBVxIJR2AGx2zfy9IoWFwCV5_fbfnXV4u1sbNBFu3s4RlWuXnTE1MUOsv_XpIPIOiw2uC1eDYzgMWDJaJ_Shvs4DuGIr691oghABB8c9WTUwHjuAHZRHpnSUJmjVzv03LAhDKwu32O0PerKGVcZhebbg2yQ_ZQt45GvZJ');"></div>
+<div class="absolute top-3 right-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-3 py-1 rounded-full text-slate-900 dark:text-white shadow-sm">
+                    Classic
+                </div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-base font-bold text-slate-900 dark:text-white line-clamp-1">Pepperoni Pizza</h3>
+<span class="text-primary font-bold">$15.00</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
+                    Hand-tossed crust topped with rich tomato sauce, mozzarella cheese, and pepperoni.
+                </p>
+<div class="mt-auto">
+<button class="add-to-cart w-full py-2 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-white font-bold text-xs transition-colors flex items-center justify-center gap-2" data-name="Pepperoni Pizza" data-price="15.00" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuCrGUMF5dCIao0H3DejeBlJkYDo5Ba9H9Ez84Xtibh-h_wFQWsntLA1FgY7Pou7bNr2aQAW_zmsRNWsuTXTBXjMS9d-aV-0rEXFhFBq6L8gBVxIJR2AGx2zfy9IoWFwCV5_fbfnXV4u1sbNBFu3s4RlWuXnTE1MUOsv_XpIPIOiw2uC1eDYzgMWDJaJ_Shvs4DuGIr691oghABB8c9WTUwHjuAHZRHpnSUJmjVzv03LAhDKwu32O0PerKGVcZhebbg2yQ_ZQt45GvZJ">
+<span class="material-symbols-outlined text-base">add_shopping_cart</span>
+                        Add to Order
+                    </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+<div class="flex justify-center sm:hidden">
+<a class="flex items-center gap-1 text-primary font-bold hover:text-primary-dark transition-colors text-sm" href="menu.html">
+                    View Full Menu
+                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-white dark:bg-surface-dark border-t border-gray-200 dark:border-gray-800 pt-16 pb-8">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-12">
+<div class="lg:col-span-4 flex flex-col gap-6">
+<div class="flex items-center gap-2">
+<div class="size-8 flex items-center justify-center rounded-md bg-slate-900 dark:bg-white text-white dark:text-slate-900">
+<span class="material-symbols-outlined text-lg">restaurant</span>
+</div>
+<span class="text-lg font-bold text-slate-900 dark:text-white">SpiceRoute</span>
+</div>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed max-w-sm">
+                    Experience the best flavors in town, delivered right to your door. Fresh ingredients, authentic taste.
+                </p>
+<div class="flex gap-4">
+<a aria-label="Facebook" class="flex items-center justify-center w-10 h-10 rounded-full bg-background-light dark:bg-background-dark text-slate-600 dark:text-slate-400 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all" href="#">
+<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
+</a>
+<a aria-label="Twitter" class="flex items-center justify-center w-10 h-10 rounded-full bg-background-light dark:bg-background-dark text-slate-600 dark:text-slate-400 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all" href="#">
+<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"></path></svg>
+</a>
+<a aria-label="Instagram" class="flex items-center justify-center w-10 h-10 rounded-full bg-background-light dark:bg-background-dark text-slate-600 dark:text-slate-400 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all" href="#">
+<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+</a>
+</div>
+</div>
+<div class="lg:col-span-2 md:col-span-1">
+<h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Company</h3>
+<ul class="flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="about.html">About Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="about.html">Careers</a></li>
+<li><a class="hover:text-primary transition-colors" href="about.html">Blog</a></li>
+<li><a class="hover:text-primary transition-colors" href="about.html">Press</a></li>
+</ul>
+</div>
+<div class="lg:col-span-2 md:col-span-1">
+<h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Support</h3>
+<ul class="flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">Help Center</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Safety Center</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Community Guidelines</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div class="lg:col-span-4">
+<h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Stay up to date</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Subscribe to our newsletter for new menu items and special offers.</p>
+<form class="flex gap-2">
+<input class="w-full px-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm text-slate-900 dark:text-white placeholder-slate-400" placeholder="Enter your email" type="email"/>
+<button class="px-4 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white text-sm font-bold transition-colors">Subscribe</button>
+</form>
+</div>
+</div>
+<div class="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-sm text-slate-400 dark:text-slate-500">
+                © 2026 SpiceRoute. All rights reserved.
+            </p>
+<div class="flex gap-6 text-sm font-medium text-slate-500 dark:text-slate-400">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Cookie Policy</a>
+</div>
+</div>
+</div>
+</footer>
+<a class="fixed bottom-6 right-6 z-50 group flex items-center justify-center" href="https://wa.me/?text=Hi%2C%20I'd%20like%20to%20place%20an%20order!" target="_blank">
+<span class="absolute right-0 bottom-16 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap mb-2 shadow-lg">Chat with us</span>
+<div class="bg-whatsapp-green hover:bg-whatsapp-green-dark text-white p-4 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.4)] transition-all transform hover:scale-110 flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">chat</span>
+</div>
+</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ============================================
+        // MOBILE MENU FUNCTIONALITY
+        // ============================================
+        const mobileMenuBtn = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMobileMenuBtn = document.getElementById('closeMobileMenu');
+        const mobileMenuOverlay = document.getElementById('mobileMenu');
+
+        // Open mobile menu
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.remove('opacity-0', 'invisible');
+                mobileMenu.classList.add('opacity-100', 'visible');
+                mobileMenu.querySelector('.absolute').classList.remove('translate-x-full');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        // Close mobile menu
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('opacity-100', 'visible');
+            mobileMenu.classList.add('opacity-0', 'invisible');
+            mobileMenu.querySelector('.absolute').classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        }
+
+        if (closeMobileMenuBtn) {
+            closeMobileMenuBtn.addEventListener('click', closeMobileMenu);
+        }
+
+        // Close menu when clicking on overlay
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', function(e) {
+                if (e.target === mobileMenuOverlay) {
+                    closeMobileMenu();
+                }
+            });
+        }
+
+        // Close menu when pressing Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('opacity-100')) {
+                closeMobileMenu();
+            }
+        });
+
+        // ============================================
+        // SHOPPING CART FUNCTIONALITY
+        // ============================================
+        const cartCountElement = document.getElementById('cartCount');
+        
+        // Initialize cart from localStorage or create empty cart
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Update cart count display
+        function updateCartCount() {
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCountElement.textContent = totalItems;
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+        
+        // Generate a unique ID for cart items
+        function generateCartItemId(name) {
+            return name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+        }
+        
+        // Add to cart function
+        function addToCart(itemName, itemPrice, itemImage) {
+            // Check if item already exists in cart
+            const existingItemIndex = cart.findIndex(item => item.name === itemName);
+            
+            if (existingItemIndex !== -1) {
+                // Increase quantity if item exists
+                cart[existingItemIndex].quantity += 1;
+            } else {
+                // Add new item to cart with unique ID
+                cart.push({
+                    id: generateCartItemId(itemName),
+                    name: itemName,
+                    price: parseFloat(itemPrice),
+                    image: itemImage,
+                    quantity: 1
+                });
+            }
+            
+            // Update cart count and save to localStorage
+            updateCartCount();
+            
+            // Show success message
+            showCartNotification(itemName);
+        }
+        
+        // Show notification when item is added to cart
+        function showCartNotification(itemName) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce flex items-center gap-2';
+            notification.innerHTML = `
+                <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                <span>Added "${itemName}" to cart!</span>
+            `;
+            document.body.appendChild(notification);
+            
+            // Remove notification after 2 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+        
+        // Add event listeners to all "Add to Cart" buttons
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const itemName = this.getAttribute('data-name');
+                const itemPrice = this.getAttribute('data-price');
+                const itemImage = this.getAttribute('data-image');
+                
+                addToCart(itemName, itemPrice, itemImage);
+            });
+        });
+        
+        // Initialize cart count on page load
+        updateCartCount();
+    });
+</script>
+</body>
+</html>
